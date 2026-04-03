@@ -4,6 +4,7 @@ from mysql.connector import Error
 import os
 import json
 from datetime import datetime, date
+from decimal import Decimal
 
 app = Flask(__name__)
 
@@ -24,8 +25,6 @@ def get_connection():
     except Error as e:
         print(f"DB Error: {e}")
         return None
-
-from decimal import Decimal
 
 def serialize(obj):
     if isinstance(obj, (datetime, date)):
@@ -304,8 +303,25 @@ def generate_payroll():
     for emp in employees:
         basic = float(emp['salary'])
         allowances = basic * 0.20
-        deductions = basic * 0.05
+
+        # Attendance percentage
+        cursor.execute("""
+            SELECT COUNT(*) as total_marked,
+                   SUM(CASE WHEN status IN ('Present','Late') THEN 1 ELSE 0 END) as present_count
+            FROM attendance
+            WHERE emp_id=%s AND MONTH(att_date)=%s AND YEAR(att_date)=%s
+        """, (emp['emp_id'], month, year))
+        att = cursor.fetchone()
+        total = att['total_marked'] or 0
+        present = float(att['present_count'] or 0)
+        att_pct = (present / total * 100) if total > 0 else 100
+
+        # Deduction logic
+        base_deduction = basic * 0.05
+        absence_deduction = basic * 0.40 if att_pct < 75 else 0
+        deductions = base_deduction + absence_deduction
         net = basic + allowances - deductions
+
         try:
             cursor.execute("""
                 INSERT INTO payroll (emp_id, month, year, basic_salary, allowances, deductions, net_salary, status)

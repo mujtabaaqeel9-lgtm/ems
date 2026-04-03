@@ -6,320 +6,169 @@
 <title>EMS — Employee Management System</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --primary: #1a56db;
-  --primary-dark: #1343b0;
-  --primary-light: #e8f0fe;
-  --primary-mid: #4f86f7;
-  --bg: #f4f6fb;
-  --white: #ffffff;
-  --surface: #ffffff;
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
-  --text: #1a202c;
-  --text-mid: #4a5568;
-  --text-muted: #94a3b8;
-  --success: #0d9488;
-  --success-bg: #f0fdf4;
-  --danger: #e53e3e;
-  --danger-bg: #fff5f5;
-  --warning: #d97706;
-  --warning-bg: #fffbeb;
-  --info: #0284c7;
-  --info-bg: #f0f9ff;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow: 0 4px 16px rgba(26,86,219,0.08);
-  --shadow-lg: 0 8px 32px rgba(26,86,219,0.12);
-  --radius: 10px;
-  --font: 'DM Sans', sans-serif;
-  --font-serif: 'DM Serif Display', serif;
+:root{--primary:#1a56db;--primary-dark:#1343b0;--primary-light:#e8f0fe;--bg:#f4f6fb;--white:#ffffff;--border:#e2e8f0;--border-light:#f1f5f9;--text:#1a202c;--text-mid:#4a5568;--text-muted:#94a3b8;--success:#0d9488;--success-bg:#f0fdf4;--danger:#e53e3e;--danger-bg:#fff5f5;--warning:#d97706;--warning-bg:#fffbeb;--info:#0284c7;--info-bg:#f0f9ff;--shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow:0 4px 16px rgba(26,86,219,0.08);--shadow-lg:0 8px 32px rgba(26,86,219,0.12);--radius:10px;--sidebar-w:240px;--font:'DM Sans',sans-serif;--font-serif:'DM Serif Display',serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--primary);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(26,86,219,0.15);z-index:200;transition:transform 0.3s ease;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199;}
+.logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.12);}
+.logo-icon{width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
+.logo-text{font-family:var(--font-serif);font-size:18px;color:#fff;}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:1.5px;text-transform:uppercase;}
+.nav{padding:12px 0;flex:1;overflow-y:auto;}
+.nav-section{padding:8px 16px 4px;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.35);text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:2px 8px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;transition:all 0.2s;}
+.nav-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav-item.active{background:rgba(255,255,255,0.18);color:#fff;}
+.nav-icon{width:18px;text-align:center;font-size:15px;}
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.12);font-size:10px;color:rgba(255,255,255,0.4);}
+.menu-btn{display:none;position:fixed;top:12px;left:12px;z-index:300;background:var(--primary);border:none;color:#fff;width:38px;height:38px;border-radius:8px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;}
+.main{margin-left:var(--sidebar-w);min-height:100vh;padding:24px;transition:margin 0.3s;}
+.page{display:none;animation:fadeUp 0.3s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.page-title{font-family:var(--font-serif);font-size:26px;color:var(--text);}
+.page-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);transition:box-shadow 0.2s,transform 0.2s;}
+.stat-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
+.stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.stat-icon-wrap{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.stat-icon-wrap.blue{background:var(--primary-light);}
+.stat-icon-wrap.green{background:var(--success-bg);}
+.stat-icon-wrap.orange{background:var(--warning-bg);}
+.stat-icon-wrap.cyan{background:var(--info-bg);}
+.stat-label{font-size:11px;color:var(--text-muted);font-weight:500;}
+.stat-value{font-size:26px;font-weight:700;color:var(--text);line-height:1;}
+.stat-trend{font-size:11px;color:var(--text-muted);margin-top:4px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px;}
+.card-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border-light);flex-wrap:wrap;gap:8px;}
+.card-title{font-size:14px;font-weight:600;color:var(--text);}
+.card-body{padding:18px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;white-space:nowrap;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-outline{background:#fff;color:var(--primary);border:1.5px solid var(--primary);}
+.btn-outline:hover{background:var(--primary-light);}
+.btn-danger{background:#fff;color:var(--danger);border:1.5px solid var(--danger);}
+.btn-danger:hover{background:var(--danger-bg);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-success:hover{background:#0a7a70;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+thead tr{background:var(--bg);}
+th{padding:10px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:0.8px;color:var(--text-muted);text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:11px 12px;font-size:12px;border-bottom:1px solid var(--border-light);color:var(--text-mid);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8faff;}
+.td-name{font-weight:600;color:var(--text);}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.emp-cell{display:flex;align-items:center;gap:8px;}
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;}
+.badge-active{background:var(--success-bg);color:var(--success);}
+.badge-inactive{background:var(--danger-bg);color:var(--danger);}
+.badge-leave{background:var(--warning-bg);color:var(--warning);}
+.badge-present{background:var(--success-bg);color:var(--success);}
+.badge-absent{background:var(--danger-bg);color:var(--danger);}
+.badge-late{background:var(--warning-bg);color:var(--warning);}
+.badge-halfday{background:var(--info-bg);color:var(--info);}
+.badge-paid{background:var(--success-bg);color:var(--success);}
+.badge-pending{background:var(--warning-bg);color:var(--warning);}
+.att-pct-wrap{display:flex;align-items:center;gap:6px;min-width:130px;}
+.att-bar{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden;}
+.att-fill{height:100%;border-radius:4px;}
+.att-fill.good{background:var(--success);}
+.att-fill.warn{background:var(--warning);}
+.att-fill.bad{background:var(--danger);}
+.att-pct-num{font-size:11px;font-weight:700;width:32px;text-align:right;}
+.att-pct-num.good{color:var(--success);}
+.att-pct-num.warn{color:var(--warning);}
+.att-pct-num.bad{color:var(--danger);}
+.deduct-badge{background:var(--danger-bg);color:var(--danger);border-radius:4px;padding:2px 6px;font-size:10px;font-weight:700;}
+.search-wrap{position:relative;}
+.search-wrap input{padding:8px 12px 8px 32px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:12px;background:var(--bg);color:var(--text);outline:none;width:180px;transition:border-color 0.2s;}
+.search-wrap input:focus{border-color:var(--primary);background:#fff;}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:11px;font-weight:600;color:var(--text-mid);}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:12px;color:var(--text);background:#fff;outline:none;transition:border-color 0.2s;width:100%;}
+input:focus,select:focus{border-color:var(--primary);}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.25s ease;}
+@keyframes modalIn{from{transform:scale(0.95) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1;}
+.modal-head h3{font-size:16px;font-weight:700;}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted);width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:var(--bg);color:var(--danger);}
+.modal-body{padding:20px 22px;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.att-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+.att-card{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;}
+.att-card:hover{border-color:var(--primary);}
+.att-emp{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.att-name{font-size:12px;font-weight:600;}
+.att-dept{font-size:10px;color:var(--text-muted);}
+.payslip{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;max-width:580px;margin:16px auto;}
+.payslip-header{text-align:center;padding-bottom:14px;border-bottom:2px solid var(--primary);margin-bottom:14px;}
+.payslip-company{font-family:var(--font-serif);font-size:20px;color:var(--primary);}
+.payslip-title{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.payslip-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-light);font-size:13px;}
+.payslip-row.total{font-weight:700;font-size:15px;border-top:2px solid var(--primary);border-bottom:none;margin-top:6px;color:var(--primary);}
+.payslip-alert{background:var(--danger-bg);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:14px;}
+.list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:14px;}
+.list-item{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;justify-content:space-between;align-items:center;}
+.list-item:hover{border-color:var(--primary);}
+.list-item-name{font-size:13px;font-weight:600;}
+.list-item-sub{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.add-inline{display:flex;gap:8px;flex-wrap:wrap;}
+.add-inline input{flex:1;min-width:130px;}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 16px;border-radius:10px;font-size:12px;font-weight:500;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-lg);z-index:9999;transform:translateX(140%);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;max-width:280px;}
+.toast.show{transform:translateX(0);}
+.toast-dot{width:7px;height:7px;border-radius:50%;background:var(--success);flex-shrink:0;}
+.toast.error .toast-dot{background:var(--danger);}
+.empty{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:0.4;}
+.loading{text-align:center;padding:30px;color:var(--text-muted);font-size:12px;}
+.filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.filter-bar select,.filter-bar input[type=date]{width:auto;padding:7px 10px;font-size:12px;}
+.rule-info{background:var(--warning-bg);border:1px solid var(--warning);border-radius:var(--radius);padding:11px 14px;margin-bottom:14px;font-size:12px;color:var(--warning);}
+.report-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.rs-card{background:var(--primary-light);border-radius:var(--radius);padding:12px;text-align:center;}
+.rs-val{font-size:22px;font-weight:700;color:var(--primary);}
+.rs-lab{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(3,1fr);}.report-summary{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .menu-btn{display:flex;}
+  .main{margin-left:0;padding:16px;padding-top:58px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  .page-header{flex-direction:column;}
+  .search-wrap input{width:100%;}
+  .att-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--text); font-family:var(--font); min-height:100vh; }
-
-/* ── SIDEBAR ── */
-.sidebar {
-  position:fixed; left:0; top:0; bottom:0; width:256px;
-  background:var(--primary);
-  display:flex; flex-direction:column;
-  box-shadow: 4px 0 24px rgba(26,86,219,0.15);
-  z-index:100;
-}
-.logo {
-  padding:28px 24px 24px;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-}
-.logo-icon {
-  width:40px; height:40px;
-  background:rgba(255,255,255,0.2);
-  border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px; margin-bottom:12px;
-}
-.logo-text { font-family:var(--font-serif); font-size:20px; color:#fff; }
-.logo-sub { font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:1.5px; margin-top:2px; text-transform:uppercase; }
-
-.nav { padding:16px 0; flex:1; }
-.nav-section { padding:8px 20px 4px; font-size:10px; letter-spacing:2px; color:rgba(255,255,255,0.35); text-transform:uppercase; }
-.nav-item {
-  display:flex; align-items:center; gap:12px;
-  padding:11px 20px; margin:2px 10px;
-  border-radius:8px;
-  cursor:pointer; color:rgba(255,255,255,0.7);
-  font-size:14px; font-weight:500;
-  transition:all 0.2s;
-}
-.nav-item:hover { background:rgba(255,255,255,0.1); color:#fff; }
-.nav-item.active { background:rgba(255,255,255,0.18); color:#fff; }
-.nav-item.active .nav-dot { background:#fff; }
-.nav-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); flex-shrink:0; }
-.nav-icon { width:18px; text-align:center; font-size:16px; }
-
-.sidebar-footer {
-  padding:16px 20px;
-  border-top:1px solid rgba(255,255,255,0.12);
-  font-size:11px; color:rgba(255,255,255,0.4);
-}
-
-/* ── MAIN ── */
-.main { margin-left:256px; min-height:100vh; padding:32px; }
-.page { display:none; animation:fadeUp 0.3s ease; }
-.page.active { display:block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-
-/* ── PAGE HEADER ── */
-.page-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; }
-.page-title { font-family:var(--font-serif); font-size:28px; color:var(--text); }
-.page-sub { font-size:13px; color:var(--text-muted); margin-top:4px; }
-.header-actions { display:flex; gap:10px; }
-
-/* ── STATS ── */
-.stats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-bottom:28px; }
-.stat-card {
-  background:var(--white); border:1px solid var(--border);
-  border-radius:var(--radius); padding:20px;
-  box-shadow:var(--shadow-sm);
-  transition:box-shadow 0.2s, transform 0.2s;
-}
-.stat-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); }
-.stat-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
-.stat-icon-wrap {
-  width:40px; height:40px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center; font-size:18px;
-}
-.stat-icon-wrap.blue { background:var(--primary-light); }
-.stat-icon-wrap.green { background:var(--success-bg); }
-.stat-icon-wrap.orange { background:var(--warning-bg); }
-.stat-icon-wrap.red { background:var(--danger-bg); }
-.stat-icon-wrap.cyan { background:var(--info-bg); }
-.stat-label { font-size:12px; color:var(--text-muted); font-weight:500; }
-.stat-value { font-size:28px; font-weight:700; color:var(--text); line-height:1; }
-.stat-trend { font-size:11px; color:var(--success); margin-top:4px; }
-
-/* ── CARD ── */
-.card {
-  background:var(--white); border:1px solid var(--border);
-  border-radius:var(--radius); box-shadow:var(--shadow-sm);
-  overflow:hidden;
-}
-.card-header {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:18px 24px; border-bottom:1px solid var(--border-light);
-}
-.card-title { font-size:15px; font-weight:600; color:var(--text); }
-.card-body { padding:24px; }
-
-/* ── BUTTONS ── */
-.btn {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:9px 18px; border-radius:8px;
-  font-family:var(--font); font-size:13px; font-weight:600;
-  cursor:pointer; border:none; transition:all 0.2s;
-}
-.btn-primary { background:var(--primary); color:#fff; }
-.btn-primary:hover { background:var(--primary-dark); box-shadow:0 4px 12px rgba(26,86,219,0.3); }
-.btn-outline { background:#fff; color:var(--primary); border:1.5px solid var(--primary); }
-.btn-outline:hover { background:var(--primary-light); }
-.btn-danger { background:#fff; color:var(--danger); border:1.5px solid var(--danger); }
-.btn-danger:hover { background:var(--danger-bg); }
-.btn-success { background:var(--success); color:#fff; }
-.btn-success:hover { background:#0a7a70; }
-.btn-sm { padding:6px 12px; font-size:12px; }
-.btn-icon { padding:8px; border-radius:6px; }
-
-/* ── TABLE ── */
-.table-wrap { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; }
-thead tr { background:var(--bg); }
-th {
-  padding:11px 16px; text-align:left;
-  font-size:11px; font-weight:600; letter-spacing:0.8px;
-  color:var(--text-muted); text-transform:uppercase;
-  border-bottom:1px solid var(--border);
-}
-td { padding:13px 16px; font-size:13px; border-bottom:1px solid var(--border-light); color:var(--text-mid); }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:#f8faff; }
-.td-name { font-weight:600; color:var(--text); }
-.td-id { color:var(--text-muted); font-size:12px; }
-
-/* ── AVATAR ── */
-.avatar {
-  width:34px; height:34px; border-radius:50%;
-  background:var(--primary-light); color:var(--primary);
-  display:inline-flex; align-items:center; justify-content:center;
-  font-size:12px; font-weight:700; flex-shrink:0;
-}
-.emp-cell { display:flex; align-items:center; gap:10px; }
-
-/* ── BADGE ── */
-.badge {
-  display:inline-flex; align-items:center;
-  padding:3px 10px; border-radius:20px;
-  font-size:11px; font-weight:600; letter-spacing:0.3px;
-}
-.badge-active { background:var(--success-bg); color:var(--success); }
-.badge-inactive { background:var(--danger-bg); color:var(--danger); }
-.badge-leave { background:var(--warning-bg); color:var(--warning); }
-.badge-present { background:var(--success-bg); color:var(--success); }
-.badge-absent { background:var(--danger-bg); color:var(--danger); }
-.badge-late { background:var(--warning-bg); color:var(--warning); }
-.badge-halfday { background:var(--info-bg); color:var(--info); }
-.badge-paid { background:var(--success-bg); color:var(--success); }
-.badge-pending { background:var(--warning-bg); color:var(--warning); }
-
-/* ── SEARCH ── */
-.search-wrap { position:relative; }
-.search-wrap input {
-  padding:9px 14px 9px 36px;
-  border:1.5px solid var(--border); border-radius:8px;
-  font-family:var(--font); font-size:13px;
-  background:var(--bg); color:var(--text); outline:none;
-  width:220px; transition:border-color 0.2s, background 0.2s;
-}
-.search-wrap input:focus { border-color:var(--primary); background:#fff; }
-.search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:14px; }
-
-/* ── FORM ── */
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.form-group { display:flex; flex-direction:column; gap:6px; }
-.form-group.full { grid-column:1/-1; }
-label { font-size:12px; font-weight:600; color:var(--text-mid); }
-input, select, textarea {
-  padding:10px 14px;
-  border:1.5px solid var(--border); border-radius:8px;
-  font-family:var(--font); font-size:13px;
-  color:var(--text); background:#fff; outline:none;
-  transition:border-color 0.2s;
-}
-input:focus, select:focus, textarea:focus { border-color:var(--primary); }
-select option { background:#fff; }
-
-/* ── MODAL ── */
-.modal-overlay {
-  position:fixed; inset:0;
-  background:rgba(15,23,42,0.5);
-  backdrop-filter:blur(4px);
-  z-index:999; display:none;
-  align-items:center; justify-content:center;
-}
-.modal-overlay.open { display:flex; }
-.modal {
-  background:#fff; border-radius:14px;
-  width:580px; max-height:88vh;
-  overflow-y:auto; box-shadow:var(--shadow-lg);
-  animation:modalIn 0.25s ease;
-}
-@keyframes modalIn { from{transform:scale(0.95) translateY(10px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
-.modal-head {
-  padding:22px 28px; border-bottom:1px solid var(--border);
-  display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:#fff; z-index:1;
-}
-.modal-head h3 { font-size:17px; font-weight:700; }
-.modal-close { background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); width:32px; height:32px; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
-.modal-close:hover { background:var(--bg); color:var(--danger); }
-.modal-body { padding:24px 28px; }
-.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); }
-
-/* ── FILTER BAR ── */
-.filter-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-.filter-bar select, .filter-bar input[type=date] { width:auto; padding:8px 12px; font-size:13px; }
-
-/* ── TABS ── */
-.tabs { display:flex; gap:4px; background:var(--bg); border-radius:10px; padding:4px; margin-bottom:20px; width:fit-content; }
-.tab { padding:8px 20px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; color:var(--text-muted); transition:all 0.2s; }
-.tab.active { background:#fff; color:var(--primary); font-weight:600; box-shadow:var(--shadow-sm); }
-
-/* ── PAYSLIP ── */
-.payslip {
-  background:#fff; border:1px solid var(--border);
-  border-radius:12px; padding:32px; max-width:600px;
-}
-.payslip-header { text-align:center; padding-bottom:20px; border-bottom:2px solid var(--primary); margin-bottom:20px; }
-.payslip-company { font-family:var(--font-serif); font-size:22px; color:var(--primary); }
-.payslip-title { font-size:13px; color:var(--text-muted); margin-top:4px; }
-.payslip-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-light); font-size:14px; }
-.payslip-row.total { font-weight:700; font-size:16px; border-top:2px solid var(--primary); border-bottom:none; margin-top:8px; color:var(--primary); }
-
-/* ── DEPT LIST ── */
-.list-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; }
-.list-item { background:var(--white); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; display:flex; justify-content:space-between; align-items:center; transition:border-color 0.2s, box-shadow 0.2s; }
-.list-item:hover { border-color:var(--primary); box-shadow:var(--shadow); }
-.list-item-name { font-size:14px; font-weight:600; }
-.list-item-sub { font-size:11px; color:var(--text-muted); margin-top:3px; }
-.add-inline { display:flex; gap:10px; }
-.add-inline input { flex:1; }
-
-/* ── ATTENDANCE GRID ── */
-.att-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
-.att-card { background:#fff; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; }
-.att-emp { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-.att-name { font-size:13px; font-weight:600; }
-.att-dept { font-size:11px; color:var(--text-muted); }
-.att-select { width:100%; }
-
-/* ── TOAST ── */
-.toast {
-  position:fixed; bottom:24px; right:24px;
-  padding:14px 20px; border-radius:10px;
-  font-size:13px; font-weight:500;
-  background:#fff; border:1px solid var(--border);
-  box-shadow:var(--shadow-lg);
-  z-index:9999; transform:translateX(140%);
-  transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);
-  display:flex; align-items:center; gap:10px;
-  max-width:320px;
-}
-.toast.show { transform:translateX(0); }
-.toast-dot { width:8px; height:8px; border-radius:50%; background:var(--success); flex-shrink:0; }
-.toast.error .toast-dot { background:var(--danger); }
-
-/* ── EMPTY ── */
-.empty { text-align:center; padding:60px 20px; color:var(--text-muted); }
-.empty-icon { font-size:42px; margin-bottom:12px; opacity:0.4; }
-.empty-text { font-size:14px; }
-
-.loading { text-align:center; padding:40px; color:var(--text-muted); font-size:13px; }
-
-/* ── REPORT TABLE ── */
-.report-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
-.rs-card { background:var(--primary-light); border-radius:var(--radius); padding:16px; text-align:center; }
-.rs-val { font-size:24px; font-weight:700; color:var(--primary); }
-.rs-lab { font-size:11px; color:var(--text-muted); margin-top:4px; }
-
-.divider { height:1px; background:var(--border); margin:20px 0; }
-
-@media print {
-  .sidebar, .main > *:not(#page-payroll), .btn, .filter-bar { display:none!important; }
-  .main { margin:0; padding:0; }
-  .payslip { border:none; box-shadow:none; }
-}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr 1fr;}.stat-value{font-size:20px;}.report-summary{grid-template-columns:1fr 1fr;}}
+@media print{.sidebar,.menu-btn,.btn,.filter-bar,.header-actions,.card-header .btn{display:none!important;}.main{margin:0;padding:0;}.payslip{border:none;box-shadow:none;}}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
+<button class="menu-btn" onclick="toggleSidebar()" id="menu-btn">☰</button>
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
   <div class="logo">
     <div class="logo-icon">🏢</div>
     <div class="logo-text">EMS</div>
@@ -327,32 +176,17 @@ select option { background:#fff; }
   </div>
   <nav class="nav">
     <div class="nav-section">Main</div>
-    <div class="nav-item active" onclick="showPage('dashboard')">
-      <span class="nav-icon">📊</span> Dashboard
-      <span class="nav-dot" style="margin-left:auto"></span>
-    </div>
-    <div class="nav-item" onclick="showPage('employees')">
-      <span class="nav-icon">👥</span> Employees
-    </div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
+    <div class="nav-item" onclick="showPage('employees')"><span class="nav-icon">👥</span>Employees</div>
     <div class="nav-section">Operations</div>
-    <div class="nav-item" onclick="showPage('attendance')">
-      <span class="nav-icon">📅</span> Attendance
-    </div>
-    <div class="nav-item" onclick="showPage('payroll')">
-      <span class="nav-icon">💰</span> Payroll
-    </div>
-    <div class="nav-item" onclick="showPage('reports')">
-      <span class="nav-icon">📄</span> Reports
-    </div>
+    <div class="nav-item" onclick="showPage('attendance')"><span class="nav-icon">📅</span>Attendance</div>
+    <div class="nav-item" onclick="showPage('payroll')"><span class="nav-icon">💰</span>Payroll</div>
+    <div class="nav-item" onclick="showPage('reports')"><span class="nav-icon">📄</span>Reports</div>
     <div class="nav-section">Settings</div>
-    <div class="nav-item" onclick="showPage('departments')">
-      <span class="nav-icon">🏬</span> Departments
-    </div>
-    <div class="nav-item" onclick="showPage('designations')">
-      <span class="nav-icon">🏷️</span> Designations
-    </div>
+    <div class="nav-item" onclick="showPage('departments')"><span class="nav-icon">🏬</span>Departments</div>
+    <div class="nav-item" onclick="showPage('designations')"><span class="nav-icon">🏷️</span>Designations</div>
   </nav>
-  <div class="sidebar-footer">v2.0 · Flask + MySQL</div>
+  <div class="sidebar-footer">v2.1 · Flask + MySQL</div>
 </aside>
 
 <main class="main">
@@ -360,59 +194,18 @@ select option { background:#fff; }
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
   <div class="page-header">
-    <div>
-      <div class="page-title">Dashboard</div>
-      <div class="page-sub" id="today-date"></div>
-    </div>
+    <div><div class="page-title">Dashboard</div><div class="page-sub" id="today-date"></div></div>
     <button class="btn btn-primary" onclick="showPage('employees')">+ Add Employee</button>
   </div>
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon-wrap blue">👥</div>
-        <div class="stat-label">Total</div>
-      </div>
-      <div class="stat-value" id="stat-total">—</div>
-      <div class="stat-trend">All Employees</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon-wrap green">✓</div>
-        <div class="stat-label">Active</div>
-      </div>
-      <div class="stat-value" id="stat-active">—</div>
-      <div class="stat-trend">Currently working</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon-wrap cyan">📅</div>
-        <div class="stat-label">Present Today</div>
-      </div>
-      <div class="stat-value" id="stat-present">—</div>
-      <div class="stat-trend">Marked attendance</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon-wrap orange">🏬</div>
-        <div class="stat-label">Departments</div>
-      </div>
-      <div class="stat-value" id="stat-depts">—</div>
-      <div class="stat-trend">Active units</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon-wrap blue">💰</div>
-        <div class="stat-label">Avg Salary</div>
-      </div>
-      <div class="stat-value" id="stat-salary">—</div>
-      <div class="stat-trend">Per employee</div>
-    </div>
+    <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap blue">👥</div><div class="stat-label">Total</div></div><div class="stat-value" id="stat-total">—</div><div class="stat-trend">Employees</div></div>
+    <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap green">✓</div><div class="stat-label">Active</div></div><div class="stat-value" id="stat-active">—</div><div class="stat-trend">Working</div></div>
+    <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap cyan">📅</div><div class="stat-label">Present</div></div><div class="stat-value" id="stat-present">—</div><div class="stat-trend">Today</div></div>
+    <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap orange">🏬</div><div class="stat-label">Depts</div></div><div class="stat-value" id="stat-depts">—</div><div class="stat-trend">Units</div></div>
+    <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap blue">💰</div><div class="stat-label">Avg Salary</div></div><div class="stat-value" id="stat-salary">—</div><div class="stat-trend">Per employee</div></div>
   </div>
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">Recent Employees</div>
-      <button class="btn btn-outline btn-sm" onclick="showPage('employees')">View All →</button>
-    </div>
+    <div class="card-header"><div class="card-title">Recent Employees</div><button class="btn btn-outline btn-sm" onclick="showPage('employees')">View All →</button></div>
     <div class="table-wrap" id="recent-table"><div class="loading">Loading...</div></div>
   </div>
 </div>
@@ -420,19 +213,13 @@ select option { background:#fff; }
 <!-- EMPLOYEES -->
 <div class="page" id="page-employees">
   <div class="page-header">
-    <div>
-      <div class="page-title">Employees</div>
-      <div class="page-sub">Manage your workforce</div>
-    </div>
+    <div><div class="page-title">Employees</div><div class="page-sub">Manage workforce</div></div>
     <button class="btn btn-primary" onclick="openEmpModal()">+ Add Employee</button>
   </div>
   <div class="card">
     <div class="card-header">
       <div class="card-title">All Records</div>
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Search name, email..." id="search-input" oninput="filterEmployees()"/>
-      </div>
+      <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Search..." id="search-input" oninput="filterEmployees()"/></div>
     </div>
     <div class="table-wrap" id="emp-table"><div class="loading">Loading...</div></div>
   </div>
@@ -440,106 +227,69 @@ select option { background:#fff; }
 
 <!-- ATTENDANCE -->
 <div class="page" id="page-attendance">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Attendance</div>
-      <div class="page-sub">Daily tracking</div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:20px">
+  <div class="page-header"><div><div class="page-title">Attendance</div><div class="page-sub">Daily tracking & percentage</div></div></div>
+  <div class="card">
     <div class="card-header">
       <div class="card-title">Mark Attendance</div>
       <div class="filter-bar">
-        <input type="date" id="att-date" onchange="loadAttendance()"/>
+        <input type="date" id="att-date"/>
         <button class="btn btn-primary btn-sm" onclick="loadAttendance()">Load</button>
         <button class="btn btn-success btn-sm" onclick="saveAllAttendance()">💾 Save All</button>
       </div>
     </div>
-    <div class="card-body">
-      <div class="att-grid" id="att-grid"><div class="loading">Loading...</div></div>
-    </div>
+    <div class="card-body"><div class="att-grid" id="att-grid"><div class="loading">Select date → Load</div></div></div>
   </div>
-
   <div class="card">
     <div class="card-header">
-      <div class="card-title">Attendance Log</div>
+      <div class="card-title">Monthly Attendance % Report</div>
       <div class="filter-bar">
-        <select id="att-log-month" onchange="loadAttLog()">
-          <option value="1">January</option><option value="2">February</option>
-          <option value="3">March</option><option value="4">April</option>
-          <option value="5">May</option><option value="6">June</option>
-          <option value="7">July</option><option value="8">August</option>
-          <option value="9">September</option><option value="10">October</option>
-          <option value="11">November</option><option value="12">December</option>
-        </select>
-        <select id="att-log-year" onchange="loadAttLog()">
-          <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
-        </select>
+        <select id="att-log-month"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
+        <select id="att-log-year"><option value="2025">2025</option><option value="2026" selected>2026</option></select>
+        <button class="btn btn-primary btn-sm" onclick="loadAttLog()">Load</button>
       </div>
     </div>
-    <div class="table-wrap" id="att-log-table"><div class="loading">Loading...</div></div>
+    <div class="table-wrap" id="att-log-table"><div class="loading">Select month → Load</div></div>
   </div>
 </div>
 
 <!-- PAYROLL -->
 <div class="page" id="page-payroll">
   <div class="page-header">
-    <div>
-      <div class="page-title">Payroll</div>
-      <div class="page-sub">Salary management</div>
-    </div>
+    <div><div class="page-title">Payroll</div><div class="page-sub">Auto attendance-based deduction</div></div>
     <div class="header-actions">
-      <select id="pay-month" class="btn btn-outline">
-        <option value="1">January</option><option value="2">February</option>
-        <option value="3">March</option><option value="4">April</option>
-        <option value="5">May</option><option value="6">June</option>
-        <option value="7">July</option><option value="8">August</option>
-        <option value="9">September</option><option value="10">October</option>
-        <option value="11">November</option><option value="12">December</option>
-      </select>
-      <select id="pay-year" class="btn btn-outline">
-        <option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option>
-      </select>
+      <select id="pay-month"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
+      <select id="pay-year"><option value="2025">2025</option><option value="2026" selected>2026</option></select>
       <button class="btn btn-primary" onclick="generatePayroll()">⚡ Generate</button>
+      <button class="btn btn-outline" onclick="loadPayroll()">🔄 Refresh</button>
     </div>
   </div>
-  <div class="card" id="payroll-card">
-    <div class="card-header">
-      <div class="card-title">Payroll Records</div>
-      <button class="btn btn-outline btn-sm" onclick="loadPayroll()">🔄 Refresh</button>
-    </div>
-    <div class="table-wrap" id="pay-table"><div class="loading">Loading...</div></div>
+  <div class="rule-info">⚠️ <strong>Rule:</strong> Attendance &lt; 75% → 40% salary deduction applied automatically on Generate.</div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Payroll Records</div></div>
+    <div class="table-wrap" id="pay-table"><div class="loading">Select month → Generate</div></div>
   </div>
-
-  <!-- PAYSLIP MODAL -->
-  <div id="payslip-area" style="display:none; margin-top:20px">
-    <div class="card-header" style="background:#fff; border-radius:var(--radius) var(--radius) 0 0; border:1px solid var(--border)">
-      <div class="card-title">Salary Slip</div>
-      <div class="header-actions">
-        <button class="btn btn-outline btn-sm" onclick="document.getElementById('payslip-area').style.display='none'">✕ Close</button>
-        <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Print</button>
+  <div id="payslip-area" style="display:none">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Salary Slip</div>
+        <div class="header-actions">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('payslip-area').style.display='none'">✕ Close</button>
+          <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Print</button>
+        </div>
       </div>
+      <div id="payslip-content"></div>
     </div>
-    <div id="payslip-content"></div>
   </div>
 </div>
 
 <!-- REPORTS -->
 <div class="page" id="page-reports">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Reports</div>
-      <div class="page-sub">Export & analyze data</div>
-    </div>
-  </div>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+  <div class="page-header"><div><div class="page-title">Reports</div><div class="page-sub">Export & analyze</div></div></div>
+  <div class="two-col">
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Employee Report</div>
-        <button class="btn btn-primary btn-sm" onclick="exportEmployeeCSV()">⬇ Export CSV</button>
-      </div>
+      <div class="card-header"><div class="card-title">Employee Report</div><button class="btn btn-primary btn-sm" onclick="exportEmployeeCSV()">⬇ CSV</button></div>
       <div class="card-body">
-        <div class="report-summary" id="emp-report-summary">
+        <div class="report-summary">
           <div class="rs-card"><div class="rs-val" id="rp-total">—</div><div class="rs-lab">Total</div></div>
           <div class="rs-card"><div class="rs-val" id="rp-active">—</div><div class="rs-lab">Active</div></div>
           <div class="rs-card"><div class="rs-val" id="rp-inactive">—</div><div class="rs-lab">Inactive</div></div>
@@ -550,39 +300,25 @@ select option { background:#fff; }
     </div>
     <div class="card">
       <div class="card-header">
-        <div class="card-title">Attendance Report</div>
+        <div class="card-title">Attendance % Report</div>
         <div class="header-actions">
-          <select id="rp-month">
-            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-            <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
-            <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
-            <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
-          </select>
-          <select id="rp-year">
-            <option value="2025">2025</option><option value="2026" selected>2026</option>
-          </select>
+          <select id="rp-month"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
+          <select id="rp-year"><option value="2025">2025</option><option value="2026" selected>2026</option></select>
           <button class="btn btn-primary btn-sm" onclick="loadAttReport()">Load</button>
           <button class="btn btn-outline btn-sm" onclick="exportAttCSV()">⬇ CSV</button>
         </div>
       </div>
-      <div class="table-wrap" id="att-report-table"><div class="loading">Loading...</div></div>
+      <div class="table-wrap" id="att-report-table"><div class="loading">Select month → Load</div></div>
     </div>
   </div>
 </div>
 
 <!-- DEPARTMENTS -->
 <div class="page" id="page-departments">
-  <div class="page-header">
-    <div><div class="page-title">Departments</div><div class="page-sub">Manage units</div></div>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title">Add Department</div></div>
+  <div class="page-header"><div><div class="page-title">Departments</div></div></div>
+  <div class="card"><div class="card-header"><div class="card-title">Add Department</div></div>
     <div class="card-body">
-      <div class="add-inline">
-        <input type="text" id="dept-name" placeholder="Department name..."/>
-        <input type="text" id="dept-loc" placeholder="Location..." style="max-width:180px"/>
-        <button class="btn btn-primary" onclick="addDepartment()">+ Add</button>
-      </div>
+      <div class="add-inline"><input type="text" id="dept-name" placeholder="Name..."/><input type="text" id="dept-loc" placeholder="Location..."/><button class="btn btn-primary" onclick="addDepartment()">+ Add</button></div>
       <div class="list-grid" id="dept-list"><div class="loading">Loading...</div></div>
     </div>
   </div>
@@ -590,16 +326,10 @@ select option { background:#fff; }
 
 <!-- DESIGNATIONS -->
 <div class="page" id="page-designations">
-  <div class="page-header">
-    <div><div class="page-title">Designations</div><div class="page-sub">Job titles</div></div>
-  </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title">Add Designation</div></div>
+  <div class="page-header"><div><div class="page-title">Designations</div></div></div>
+  <div class="card"><div class="card-header"><div class="card-title">Add Designation</div></div>
     <div class="card-body">
-      <div class="add-inline">
-        <input type="text" id="desig-title" placeholder="Designation title..."/>
-        <button class="btn btn-primary" onclick="addDesignation()">+ Add</button>
-      </div>
+      <div class="add-inline"><input type="text" id="desig-title" placeholder="Title..."/><button class="btn btn-primary" onclick="addDesignation()">+ Add</button></div>
       <div class="list-grid" id="desig-list"><div class="loading">Loading...</div></div>
     </div>
   </div>
@@ -607,397 +337,196 @@ select option { background:#fff; }
 
 </main>
 
-<!-- EMPLOYEE MODAL -->
+<!-- EMP MODAL -->
 <div class="modal-overlay" id="emp-modal">
   <div class="modal">
-    <div class="modal-head">
-      <h3 id="modal-title">Add Employee</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
+    <div class="modal-head"><h3 id="modal-title">Add Employee</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="emp-id"/>
       <div class="form-grid">
-        <div class="form-group"><label>First Name *</label><input type="text" id="f-first" placeholder="Ali"/></div>
-        <div class="form-group"><label>Last Name *</label><input type="text" id="f-last" placeholder="Hassan"/></div>
-        <div class="form-group full"><label>Email *</label><input type="email" id="f-email" placeholder="ali@company.com"/></div>
-        <div class="form-group"><label>Phone</label><input type="text" id="f-phone" placeholder="0300-1234567"/></div>
-        <div class="form-group"><label>Salary (PKR)</label><input type="number" id="f-salary" placeholder="50000"/></div>
+        <div class="form-group"><label>First Name *</label><input type="text" id="f-first"/></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" id="f-last"/></div>
+        <div class="form-group full"><label>Email *</label><input type="email" id="f-email"/></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="f-phone"/></div>
+        <div class="form-group"><label>Salary (PKR)</label><input type="number" id="f-salary"/></div>
         <div class="form-group"><label>Hire Date</label><input type="date" id="f-date"/></div>
-        <div class="form-group">
-          <label>Department</label>
-          <select id="f-dept"><option value="">Select...</option></select>
-        </div>
-        <div class="form-group">
-          <label>Designation</label>
-          <select id="f-desig"><option value="">Select...</option></select>
-        </div>
-        <div class="form-group full">
-          <label>Status</label>
-          <select id="f-status">
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="On Leave">On Leave</option>
-          </select>
-        </div>
+        <div class="form-group"><label>Department</label><select id="f-dept"><option value="">Select...</option></select></div>
+        <div class="form-group"><label>Designation</label><select id="f-desig"><option value="">Select...</option></select></div>
+        <div class="form-group full"><label>Status</label><select id="f-status"><option value="Active">Active</option><option value="Inactive">Inactive</option><option value="On Leave">On Leave</option></select></div>
       </div>
-      <div class="form-actions">
-        <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveEmployee()">Save Employee</button>
-      </div>
+      <div class="form-actions"><button class="btn btn-danger" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveEmployee()">Save</button></div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg"></span></div>
 
 <script>
-let allEmployees = [], departments = [], designations = [];
-let attData = {};
-let attReportData = [], empReportData = [];
+let allEmployees=[],departments=[],designations=[],empReportData=[],attReportData=[];
 
-// ── UTILS ────────────────────────────────────────
-function toast(msg, type='success') {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.className = 'toast show' + (type==='error'?' error':'');
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
-function initToday() {
-  const d = new Date();
-  document.getElementById('today-date').textContent = d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('att-date').value = d.toISOString().split('T')[0];
-  document.getElementById('att-log-month').value = d.getMonth()+1;
-  document.getElementById('pay-month').value = d.getMonth()+1;
-  document.getElementById('rp-month').value = d.getMonth()+1;
-}
-function avatar(fn, ln) {
-  return `<div class="avatar">${(fn[0]||'')+(ln[0]||'')}</div>`;
-}
-function badgeStatus(s) {
-  const m = {Active:'active',Inactive:'inactive','On Leave':'leave',Present:'present',Absent:'absent',Late:'late','Half Day':'halfday',Paid:'paid',Pending:'pending'};
-  return `<span class="badge badge-${m[s]||'active'}">${s}</span>`;
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+
+function toast(msg,type='success'){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.className='toast show'+(type==='error'?' error':'');setTimeout(()=>t.classList.remove('show'),3000);}
+
+function initToday(){const d=new Date();document.getElementById('today-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});document.getElementById('att-date').value=d.toISOString().split('T')[0];document.getElementById('att-log-month').value=d.getMonth()+1;document.getElementById('pay-month').value=d.getMonth()+1;document.getElementById('rp-month').value=d.getMonth()+1;}
+
+function av(fn,ln){return `<div class="avatar">${(fn[0]||'')+(ln[0]||'')}</div>`;}
+function bs(s){const m={Active:'active',Inactive:'inactive','On Leave':'leave',Present:'present',Absent:'absent',Late:'late','Half Day':'halfday',Paid:'paid',Pending:'pending'};return `<span class="badge badge-${m[s]||'active'}">${s}</span>`;}
+
+function pctBar(pct){
+  const cls=pct>=75?'good':pct>=50?'warn':'bad';
+  return `<div class="att-pct-wrap"><div class="att-bar"><div class="att-fill ${cls}" style="width:${Math.min(pct,100)}%"></div></div><span class="att-pct-num ${cls}">${pct.toFixed(0)}%</span>${pct<75?'<span class="deduct-badge">⚠️-40%</span>':''}</div>`;
 }
 
-// ── NAVIGATION ───────────────────────────────────
-function showPage(name) {
+function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  const pages = ['dashboard','employees','attendance','payroll','reports','departments','designations'];
-  const idx = pages.indexOf(name);
-  if(idx>=0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
-  const loaders = {dashboard:loadDashboard,employees:loadEmployees,attendance:()=>{loadAttendance();loadAttLog();},payroll:loadPayroll,reports:()=>{loadEmpReport();loadAttReport();},departments:loadDepartments,designations:loadDesignations};
-  if(loaders[name]) loaders[name]();
+  const pages=['dashboard','employees','attendance','payroll','reports','departments','designations'];
+  const idx=pages.indexOf(name);if(idx>=0)document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  const loaders={dashboard:loadDashboard,employees:loadEmployees,attendance:()=>{},payroll:loadPayroll,reports:()=>{loadEmpReport();loadAttReport();},departments:loadDepartments,designations:loadDesignations};
+  if(loaders[name])loaders[name]();
+  closeSidebar();
 }
 
-// ── DASHBOARD ────────────────────────────────────
-async function loadDashboard() {
-  const stats = await fetch('/api/stats').then(r=>r.json()).catch(()=>({}));
-  document.getElementById('stat-total').textContent = stats.total_employees||'0';
-  document.getElementById('stat-active').textContent = stats.active_employees||'0';
-  document.getElementById('stat-present').textContent = stats.present_today||'0';
-  document.getElementById('stat-depts').textContent = stats.total_departments||'0';
-  document.getElementById('stat-salary').textContent = stats.avg_salary ? '₨'+Math.round(stats.avg_salary/1000)+'K' : '—';
-  const emps = await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('recent-table').innerHTML = buildEmpTable(emps.slice(0,5));
+async function loadDashboard(){
+  const stats=await fetch('/api/stats').then(r=>r.json()).catch(()=>({}));
+  document.getElementById('stat-total').textContent=stats.total_employees||'0';
+  document.getElementById('stat-active').textContent=stats.active_employees||'0';
+  document.getElementById('stat-present').textContent=stats.present_today||'0';
+  document.getElementById('stat-depts').textContent=stats.total_departments||'0';
+  document.getElementById('stat-salary').textContent=stats.avg_salary?'₨'+Math.round(stats.avg_salary/1000)+'K':'—';
+  const emps=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('recent-table').innerHTML=buildEmpTable(emps.slice(0,5));
 }
 
-// ── EMPLOYEES ────────────────────────────────────
-async function loadEmployees() {
-  document.getElementById('emp-table').innerHTML = '<div class="loading">Loading...</div>';
-  allEmployees = await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('emp-table').innerHTML = buildEmpTable(allEmployees);
+async function loadEmployees(){
+  document.getElementById('emp-table').innerHTML='<div class="loading">Loading...</div>';
+  allEmployees=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('emp-table').innerHTML=buildEmpTable(allEmployees);
 }
 
-function buildEmpTable(emps) {
-  if(!emps.length) return '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No employees found</div></div>';
-  return `<table><thead><tr><th>ID</th><th>Employee</th><th>Department</th><th>Designation</th><th>Salary</th><th>Status</th><th>Actions</th></tr></thead>
-  <tbody>${emps.map(e=>`<tr>
-    <td class="td-id">#${String(e.emp_id).padStart(3,'0')}</td>
-    <td><div class="emp-cell">${avatar(e.first_name,e.last_name)}<div><div class="td-name">${e.first_name} ${e.last_name}</div><div style="font-size:11px;color:var(--text-muted)">${e.email}</div></div></div></td>
-    <td>${e.dept_name||'—'}</td>
-    <td>${e.designation_title||'—'}</td>
+function buildEmpTable(emps){
+  if(!emps.length)return '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No employees</div></div>';
+  return `<table><thead><tr><th>ID</th><th>Employee</th><th>Department</th><th>Designation</th><th>Salary</th><th>Status</th><th>Actions</th></tr></thead><tbody>${emps.map(e=>`<tr>
+    <td style="color:var(--text-muted);font-size:11px">#${String(e.emp_id).padStart(3,'0')}</td>
+    <td><div class="emp-cell">${av(e.first_name,e.last_name)}<div><div class="td-name">${e.first_name} ${e.last_name}</div><div style="font-size:10px;color:var(--text-muted)">${e.email}</div></div></div></td>
+    <td>${e.dept_name||'—'}</td><td>${e.designation_title||'—'}</td>
     <td>₨${Number(e.salary).toLocaleString()}</td>
-    <td>${badgeStatus(e.status)}</td>
-    <td><div style="display:flex;gap:6px">
-      <button class="btn btn-outline btn-sm" onclick="editEmployee(${e.emp_id})">Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteEmployee(${e.emp_id})">Del</button>
-    </div></td>
+    <td>${bs(e.status)}</td>
+    <td><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick="editEmployee(${e.emp_id})">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteEmployee(${e.emp_id})">Del</button></div></td>
   </tr>`).join('')}</tbody></table>`;
 }
 
-function filterEmployees() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const f = allEmployees.filter(e=>`${e.first_name} ${e.last_name} ${e.email} ${e.dept_name||''} ${e.designation_title||''}`.toLowerCase().includes(q));
-  document.getElementById('emp-table').innerHTML = buildEmpTable(f);
+function filterEmployees(){const q=document.getElementById('search-input').value.toLowerCase();document.getElementById('emp-table').innerHTML=buildEmpTable(allEmployees.filter(e=>`${e.first_name} ${e.last_name} ${e.email} ${e.dept_name||''} ${e.designation_title||''}`.toLowerCase().includes(q)));}
+
+async function openEmpModal(){await loadDropdowns();document.getElementById('emp-id').value='';document.getElementById('modal-title').textContent='Add Employee';['f-first','f-last','f-email','f-phone','f-salary','f-date'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-dept').value='';document.getElementById('f-desig').value='';document.getElementById('f-status').value='Active';document.getElementById('emp-modal').classList.add('open');}
+function closeModal(){document.getElementById('emp-modal').classList.remove('open');}
+
+async function loadDropdowns(){
+  departments=await fetch('/api/departments').then(r=>r.json()).catch(()=>[]);
+  designations=await fetch('/api/designations').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('f-dept').innerHTML='<option value="">Select...</option>'+departments.map(d=>`<option value="${d.dept_id}">${d.dept_name}</option>`).join('');
+  document.getElementById('f-desig').innerHTML='<option value="">Select...</option>'+designations.map(d=>`<option value="${d.designation_id}">${d.title}</option>`).join('');
 }
 
-// ── MODAL ────────────────────────────────────────
-async function openEmpModal() {
+async function editEmployee(id){
   await loadDropdowns();
-  document.getElementById('emp-id').value = '';
-  document.getElementById('modal-title').textContent = 'Add Employee';
-  ['f-first','f-last','f-email','f-phone','f-salary','f-date'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-dept').value='';
-  document.getElementById('f-desig').value='';
-  document.getElementById('f-status').value='Active';
-  document.getElementById('emp-modal').classList.add('open');
-}
-function closeModal() { document.getElementById('emp-modal').classList.remove('open'); }
-
-async function loadDropdowns() {
-  departments = await fetch('/api/departments').then(r=>r.json()).catch(()=>[]);
-  designations = await fetch('/api/designations').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('f-dept').innerHTML = '<option value="">Select...</option>'+departments.map(d=>`<option value="${d.dept_id}">${d.dept_name}</option>`).join('');
-  document.getElementById('f-desig').innerHTML = '<option value="">Select...</option>'+designations.map(d=>`<option value="${d.designation_id}">${d.title}</option>`).join('');
+  const emp=await fetch(`/api/employees/${id}`).then(r=>r.json());
+  document.getElementById('emp-id').value=emp.emp_id;document.getElementById('modal-title').textContent='Edit Employee';
+  document.getElementById('f-first').value=emp.first_name;document.getElementById('f-last').value=emp.last_name;
+  document.getElementById('f-email').value=emp.email;document.getElementById('f-phone').value=emp.phone||'';
+  document.getElementById('f-salary').value=emp.salary;document.getElementById('f-date').value=emp.hire_date?emp.hire_date.split('T')[0]:'';
+  document.getElementById('f-dept').value=emp.dept_id||'';document.getElementById('f-desig').value=emp.designation_id||'';
+  document.getElementById('f-status').value=emp.status;document.getElementById('emp-modal').classList.add('open');
 }
 
-async function editEmployee(id) {
-  await loadDropdowns();
-  const emp = await fetch(`/api/employees/${id}`).then(r=>r.json());
-  document.getElementById('emp-id').value = emp.emp_id;
-  document.getElementById('modal-title').textContent = 'Edit Employee';
-  document.getElementById('f-first').value = emp.first_name;
-  document.getElementById('f-last').value = emp.last_name;
-  document.getElementById('f-email').value = emp.email;
-  document.getElementById('f-phone').value = emp.phone||'';
-  document.getElementById('f-salary').value = emp.salary;
-  document.getElementById('f-date').value = emp.hire_date ? emp.hire_date.split('T')[0] : '';
-  document.getElementById('f-dept').value = emp.dept_id||'';
-  document.getElementById('f-desig').value = emp.designation_id||'';
-  document.getElementById('f-status').value = emp.status;
-  document.getElementById('emp-modal').classList.add('open');
-}
-
-async function saveEmployee() {
-  const id = document.getElementById('emp-id').value;
-  const data = {
-    first_name: document.getElementById('f-first').value,
-    last_name: document.getElementById('f-last').value,
-    email: document.getElementById('f-email').value,
-    phone: document.getElementById('f-phone').value,
-    salary: document.getElementById('f-salary').value,
-    hire_date: document.getElementById('f-date').value,
-    dept_id: document.getElementById('f-dept').value||null,
-    designation_id: document.getElementById('f-desig').value||null,
-    status: document.getElementById('f-status').value
-  };
+async function saveEmployee(){
+  const id=document.getElementById('emp-id').value;
+  const data={first_name:document.getElementById('f-first').value,last_name:document.getElementById('f-last').value,email:document.getElementById('f-email').value,phone:document.getElementById('f-phone').value,salary:document.getElementById('f-salary').value,hire_date:document.getElementById('f-date').value,dept_id:document.getElementById('f-dept').value||null,designation_id:document.getElementById('f-desig').value||null,status:document.getElementById('f-status').value};
   if(!data.first_name||!data.last_name||!data.email){toast('Name & email required!','error');return;}
-  const url = id?`/api/employees/${id}`:'/api/employees';
-  const res = await fetch(url,{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-  const json = await res.json();
-  if(res.ok){toast(id?'Employee updated!':'Employee added!');closeModal();loadEmployees();loadDashboard();}
-  else toast(json.error||'Error','error');
+  const res=await fetch(id?`/api/employees/${id}`:'/api/employees',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const json=await res.json();
+  if(res.ok){toast(id?'Updated!':'Employee added!');closeModal();loadEmployees();loadDashboard();}else toast(json.error||'Error','error');
 }
 
-async function deleteEmployee(id) {
-  if(!confirm('Delete this employee?')) return;
-  const res = await fetch(`/api/employees/${id}`,{method:'DELETE'});
-  if(res.ok){toast('Deleted');loadEmployees();loadDashboard();}
-  else toast('Error deleting','error');
+async function deleteEmployee(id){if(!confirm('Delete?'))return;const res=await fetch(`/api/employees/${id}`,{method:'DELETE'});if(res.ok){toast('Deleted');loadEmployees();loadDashboard();}else toast('Error','error');}
+
+async function loadAttendance(){
+  const date=document.getElementById('att-date').value;
+  if(!date){toast('Select a date','error');return;}
+  document.getElementById('att-grid').innerHTML='<div class="loading">Loading...</div>';
+  const[emps,attList]=await Promise.all([fetch('/api/employees').then(r=>r.json()).catch(()=>[]),fetch(`/api/attendance?date=${date}`).then(r=>r.json()).catch(()=>[])]);
+  const attMap={};attList.forEach(a=>{attMap[a.emp_id]=a;});
+  const active=emps.filter(e=>e.status==='Active');
+  if(!active.length){document.getElementById('att-grid').innerHTML='<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No active employees.<br>Run SQL: UPDATE employees SET status="Active";</div></div>';return;}
+  document.getElementById('att-grid').innerHTML=active.map(e=>{const s=attMap[e.emp_id]?attMap[e.emp_id].status:'Present';return `<div class="att-card"><div class="att-emp">${av(e.first_name,e.last_name)}<div><div class="att-name">${e.first_name} ${e.last_name}</div><div class="att-dept">${e.dept_name||'—'}</div></div></div><select id="att-${e.emp_id}" style="font-size:12px;width:100%"><option value="Present" ${s==='Present'?'selected':''}>✅ Present</option><option value="Absent" ${s==='Absent'?'selected':''}>❌ Absent</option><option value="Late" ${s==='Late'?'selected':''}>⏰ Late</option><option value="Half Day" ${s==='Half Day'?'selected':''}>🌓 Half Day</option></select></div>`;}).join('');
 }
 
-// ── ATTENDANCE ───────────────────────────────────
-async function loadAttendance() {
-  const date = document.getElementById('att-date').value;
-  const [emps, attList] = await Promise.all([
-    fetch('/api/employees').then(r=>r.json()).catch(()=>[]),
-    fetch(`/api/attendance?date=${date}`).then(r=>r.json()).catch(()=>[])
-  ]);
-  attData = {};
-  attList.forEach(a=>{ attData[a.emp_id] = a; });
-  const active = emps.filter(e=>e.status==='Active');
-  if(!active.length){document.getElementById('att-grid').innerHTML='<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No active employees</div></div>';return;}
-  document.getElementById('att-grid').innerHTML = active.map(e=>{
-    const existing = attData[e.emp_id];
-    const sel = existing ? existing.status : 'Present';
-    return `<div class="att-card">
-      <div class="att-emp">${avatar(e.first_name,e.last_name)}<div><div class="att-name">${e.first_name} ${e.last_name}</div><div class="att-dept">${e.dept_name||'—'}</div></div></div>
-      <select class="att-select" id="att-${e.emp_id}" style="font-size:12px">
-        <option value="Present" ${sel==='Present'?'selected':''}>✅ Present</option>
-        <option value="Absent" ${sel==='Absent'?'selected':''}>❌ Absent</option>
-        <option value="Late" ${sel==='Late'?'selected':''}>⏰ Late</option>
-        <option value="Half Day" ${sel==='Half Day'?'selected':''}>🌓 Half Day</option>
-      </select>
-    </div>`;
-  }).join('');
+async function saveAllAttendance(){
+  const date=document.getElementById('att-date').value;
+  if(!date){toast('Select a date','error');return;}
+  const emps=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
+  const active=emps.filter(e=>e.status==='Active');
+  let saved=0;
+  for(const e of active){const sel=document.getElementById(`att-${e.emp_id}`);if(!sel)continue;await fetch('/api/attendance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emp_id:e.emp_id,att_date:date,status:sel.value})});saved++;}
+  toast(`✅ Saved for ${saved} employees!`);loadDashboard();
 }
 
-async function saveAllAttendance() {
-  const date = document.getElementById('att-date').value;
-  const emps = await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
-  const active = emps.filter(e=>e.status==='Active');
-  let saved = 0;
-  for(const e of active) {
-    const sel = document.getElementById(`att-${e.emp_id}`);
-    if(!sel) continue;
-    await fetch('/api/attendance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emp_id:e.emp_id,att_date:date,status:sel.value})});
-    saved++;
-  }
-  toast(`Attendance saved for ${saved} employees!`);
-  loadDashboard();
-}
-
-async function loadAttLog() {
-  const month = document.getElementById('att-log-month').value;
-  const year = document.getElementById('att-log-year').value;
-  const data = await fetch(`/api/reports/attendance?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
+async function loadAttLog(){
+  const month=document.getElementById('att-log-month').value;const year=document.getElementById('att-log-year').value;
+  document.getElementById('att-log-table').innerHTML='<div class="loading">Loading...</div>';
+  const data=await fetch(`/api/reports/attendance?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
   if(!data.length){document.getElementById('att-log-table').innerHTML='<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No data for this period</div></div>';return;}
-  document.getElementById('att-log-table').innerHTML = `<table><thead><tr><th>Employee</th><th>Department</th><th>Present</th><th>Absent</th><th>Late</th><th>Half Day</th><th>Total</th></tr></thead>
-  <tbody>${data.map(r=>`<tr>
-    <td class="td-name">${r.first_name} ${r.last_name}</td>
-    <td>${r.dept_name||'—'}</td>
-    <td style="color:var(--success);font-weight:600">${r.present_days||0}</td>
-    <td style="color:var(--danger);font-weight:600">${r.absent_days||0}</td>
-    <td style="color:var(--warning);font-weight:600">${r.late_days||0}</td>
-    <td style="color:var(--info);font-weight:600">${r.half_days||0}</td>
-    <td>${r.total_marked||0}</td>
-  </tr>`).join('')}</tbody></table>`;
+  document.getElementById('att-log-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Dept</th><th>Present</th><th>Absent</th><th>Late</th><th>Half Day</th><th>Attendance %</th></tr></thead><tbody>${data.map(r=>{const total=(r.present_days||0)+(r.absent_days||0)+(r.late_days||0)+(r.half_days||0);const pct=total>0?((r.present_days||0)+(r.late_days||0))/total*100:0;return `<tr><td class="td-name">${r.first_name} ${r.last_name}</td><td>${r.dept_name||'—'}</td><td style="color:var(--success);font-weight:600">${r.present_days||0}</td><td style="color:var(--danger);font-weight:600">${r.absent_days||0}</td><td style="color:var(--warning);font-weight:600">${r.late_days||0}</td><td style="color:var(--info);font-weight:600">${r.half_days||0}</td><td>${pctBar(pct)}</td></tr>`;}).join('')}</tbody></table>`;
 }
 
-// ── PAYROLL ──────────────────────────────────────
-async function loadPayroll() {
-  const month = document.getElementById('pay-month').value;
-  const year = document.getElementById('pay-year').value;
-  const data = await fetch(`/api/payroll?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
-  if(!data.length){document.getElementById('pay-table').innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No payroll. Click Generate!</div></div>';return;}
-  document.getElementById('pay-table').innerHTML = `<table><thead><tr><th>Employee</th><th>Department</th><th>Basic</th><th>Allowances</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th>Actions</th></tr></thead>
-  <tbody>${data.map(p=>`<tr>
-    <td><div class="emp-cell">${avatar(p.first_name,p.last_name)}<div class="td-name">${p.first_name} ${p.last_name}</div></div></td>
-    <td>${p.dept_name||'—'}</td>
-    <td>₨${Number(p.basic_salary).toLocaleString()}</td>
-    <td style="color:var(--success)">+₨${Number(p.allowances).toLocaleString()}</td>
-    <td style="color:var(--danger)">-₨${Number(p.deductions).toLocaleString()}</td>
-    <td style="font-weight:700;color:var(--primary)">₨${Number(p.net_salary).toLocaleString()}</td>
-    <td>${badgeStatus(p.status)}</td>
-    <td><div style="display:flex;gap:6px">
-      <button class="btn btn-outline btn-sm" onclick="showPayslip(${JSON.stringify(p).replace(/"/g,'&quot;')})">📄 Slip</button>
-      ${p.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="markPaid(${p.pay_id})">✓ Pay</button>`:''}
-    </div></td>
-  </tr>`).join('')}</tbody></table>`;
+async function loadPayroll(){
+  const month=document.getElementById('pay-month').value;const year=document.getElementById('pay-year').value;
+  document.getElementById('pay-table').innerHTML='<div class="loading">Loading...</div>';
+  const data=await fetch(`/api/payroll?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
+  if(!data.length){document.getElementById('pay-table').innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No payroll. Click ⚡ Generate!</div></div>';return;}
+  document.getElementById('pay-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Department</th><th>Basic</th><th>Allowances</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th>Actions</th></tr></thead><tbody>${data.map(p=>{const isD=Number(p.deductions)>Number(p.basic_salary)*0.06;return `<tr><td><div class="emp-cell">${av(p.first_name,p.last_name)}<div class="td-name">${p.first_name} ${p.last_name}</div></div></td><td>${p.dept_name||'—'}</td><td>₨${Number(p.basic_salary).toLocaleString()}</td><td style="color:var(--success)">+₨${Number(p.allowances).toLocaleString()}</td><td style="color:var(--danger)">${isD?'⚠️':''}-₨${Number(p.deductions).toLocaleString()}</td><td style="font-weight:700;color:var(--primary)">₨${Number(p.net_salary).toLocaleString()}</td><td>${bs(p.status)}</td><td><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick='showPayslip(${JSON.stringify(p).replace(/'/g,"&#39;")})'>📄 Slip</button>${p.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="markPaid(${p.pay_id})">✓ Pay</button>`:''}</div></td></tr>`;}).join('')}</tbody></table>`;
 }
 
-async function generatePayroll() {
-  const month = document.getElementById('pay-month').value;
-  const year = document.getElementById('pay-year').value;
-  const res = await fetch('/api/payroll/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({month,year})});
-  const json = await res.json();
-  toast(json.message||'Generated!');
-  loadPayroll();
-}
+async function generatePayroll(){const month=document.getElementById('pay-month').value;const year=document.getElementById('pay-year').value;toast('Generating...');const res=await fetch('/api/payroll/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({month,year})});const json=await res.json();toast(json.message||'Done!');loadPayroll();}
+async function markPaid(id){const res=await fetch(`/api/payroll/${id}/pay`,{method:'PUT'});if(res.ok){toast('Marked as paid!');loadPayroll();}else toast('Error','error');}
 
-async function markPaid(id) {
-  const res = await fetch(`/api/payroll/${id}/pay`,{method:'PUT'});
-  if(res.ok){toast('Marked as paid!');loadPayroll();}
-  else toast('Error','error');
-}
-
-function showPayslip(p) {
-  const months = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('payslip-content').innerHTML = `
-  <div class="payslip" style="margin:20px">
-    <div class="payslip-header">
-      <div class="payslip-company">Employee Management System</div>
-      <div class="payslip-title">SALARY SLIP — ${months[p.month]} ${p.year}</div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;font-size:13px">
-      <div><strong>Employee:</strong> ${p.first_name} ${p.last_name}</div>
-      <div><strong>Department:</strong> ${p.dept_name||'—'}</div>
-      <div><strong>Designation:</strong> ${p.title||'—'}</div>
-      <div><strong>Pay Period:</strong> ${months[p.month]} ${p.year}</div>
-    </div>
-    <div class="divider"></div>
-    <div class="payslip-row"><span>Basic Salary</span><span>₨${Number(p.basic_salary).toLocaleString()}</span></div>
-    <div class="payslip-row" style="color:var(--success)"><span>Allowances (20%)</span><span>+₨${Number(p.allowances).toLocaleString()}</span></div>
-    <div class="payslip-row" style="color:var(--danger)"><span>Deductions (5%)</span><span>-₨${Number(p.deductions).toLocaleString()}</span></div>
-    <div class="payslip-row total"><span>NET SALARY</span><span>₨${Number(p.net_salary).toLocaleString()}</span></div>
-    <div style="margin-top:24px;font-size:11px;color:var(--text-muted);text-align:center">Generated on ${new Date().toLocaleDateString()} · EMS v2.0</div>
-  </div>`;
-  document.getElementById('payslip-area').style.display = 'block';
+function showPayslip(p){
+  const months=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  const isD=Number(p.deductions)>Number(p.basic_salary)*0.06;
+  document.getElementById('payslip-content').innerHTML=`<div class="payslip"><div class="payslip-header"><div class="payslip-company">Employee Management System</div><div class="payslip-title">SALARY SLIP — ${months[p.month]} ${p.year}</div></div>${isD?'<div class="payslip-alert">⚠️ Attendance below 75% — 40% deduction applied</div>':''}<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;font-size:12px"><div><b>Employee:</b> ${p.first_name} ${p.last_name}</div><div><b>Department:</b> ${p.dept_name||'—'}</div><div><b>Designation:</b> ${p.title||'—'}</div><div><b>Attendance:</b> ${isD?'Below 75% ⚠️':'Above 75% ✅'}</div></div><div class="payslip-row"><span>Basic Salary</span><span>₨${Number(p.basic_salary).toLocaleString()}</span></div><div class="payslip-row" style="color:var(--success)"><span>Allowances (20%)</span><span>+₨${Number(p.allowances).toLocaleString()}</span></div><div class="payslip-row" style="color:var(--danger)"><span>Deductions ${isD?'(5%+40% absent)':'(5% tax)'}</span><span>-₨${Number(p.deductions).toLocaleString()}</span></div><div class="payslip-row total"><span>NET SALARY</span><span>₨${Number(p.net_salary).toLocaleString()}</span></div><div style="margin-top:16px;font-size:10px;color:var(--text-muted);text-align:center">Generated: ${new Date().toLocaleDateString()} · EMS v2.1</div></div>`;
+  document.getElementById('payslip-area').style.display='block';
   document.getElementById('payslip-area').scrollIntoView({behavior:'smooth'});
 }
 
-// ── REPORTS ──────────────────────────────────────
-async function loadEmpReport() {
-  empReportData = await fetch('/api/reports/employees').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('rp-total').textContent = empReportData.length;
-  document.getElementById('rp-active').textContent = empReportData.filter(e=>e.status==='Active').length;
-  document.getElementById('rp-inactive').textContent = empReportData.filter(e=>e.status==='Inactive').length;
-  document.getElementById('rp-leave').textContent = empReportData.filter(e=>e.status==='On Leave').length;
-  document.getElementById('emp-report-table').innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Dept</th><th>Salary</th><th>Status</th></tr></thead>
-  <tbody>${empReportData.map(e=>`<tr>
-    <td class="td-name">${e.first_name} ${e.last_name}</td>
-    <td style="font-size:12px;color:var(--text-muted)">${e.email}</td>
-    <td>${e.dept_name||'—'}</td>
-    <td>₨${Number(e.salary).toLocaleString()}</td>
-    <td>${badgeStatus(e.status)}</td>
-  </tr>`).join('')}</tbody></table>`;
+async function loadEmpReport(){
+  empReportData=await fetch('/api/reports/employees').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('rp-total').textContent=empReportData.length;
+  document.getElementById('rp-active').textContent=empReportData.filter(e=>e.status==='Active').length;
+  document.getElementById('rp-inactive').textContent=empReportData.filter(e=>e.status==='Inactive').length;
+  document.getElementById('rp-leave').textContent=empReportData.filter(e=>e.status==='On Leave').length;
+  document.getElementById('emp-report-table').innerHTML=`<table><thead><tr><th>Name</th><th>Email</th><th>Dept</th><th>Salary</th><th>Status</th></tr></thead><tbody>${empReportData.map(e=>`<tr><td class="td-name">${e.first_name} ${e.last_name}</td><td style="font-size:11px;color:var(--text-muted)">${e.email}</td><td>${e.dept_name||'—'}</td><td>₨${Number(e.salary).toLocaleString()}</td><td>${bs(e.status)}</td></tr>`).join('')}</tbody></table>`;
 }
 
-async function loadAttReport() {
-  const month = document.getElementById('rp-month').value;
-  const year = document.getElementById('rp-year').value;
-  attReportData = await fetch(`/api/reports/attendance?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
-  document.getElementById('att-report-table').innerHTML = `<table><thead><tr><th>Employee</th><th>Present</th><th>Absent</th><th>Late</th></tr></thead>
-  <tbody>${attReportData.map(r=>`<tr>
-    <td class="td-name">${r.first_name} ${r.last_name}</td>
-    <td style="color:var(--success);font-weight:600">${r.present_days||0}</td>
-    <td style="color:var(--danger);font-weight:600">${r.absent_days||0}</td>
-    <td style="color:var(--warning);font-weight:600">${r.late_days||0}</td>
-  </tr>`).join('')}</tbody></table>`;
+async function loadAttReport(){
+  const month=document.getElementById('rp-month').value;const year=document.getElementById('rp-year').value;
+  attReportData=await fetch(`/api/reports/attendance?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
+  document.getElementById('att-report-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Present</th><th>Absent</th><th>Late</th><th>Attendance %</th></tr></thead><tbody>${attReportData.map(r=>{const total=(r.present_days||0)+(r.absent_days||0)+(r.late_days||0)+(r.half_days||0);const pct=total>0?((r.present_days||0)+(r.late_days||0))/total*100:0;return `<tr><td class="td-name">${r.first_name} ${r.last_name}</td><td style="color:var(--success);font-weight:600">${r.present_days||0}</td><td style="color:var(--danger);font-weight:600">${r.absent_days||0}</td><td style="color:var(--warning);font-weight:600">${r.late_days||0}</td><td>${pctBar(pct)}</td></tr>`;}).join('')}</tbody></table>`;
 }
 
-function exportCSV(data, filename) {
-  if(!data.length){toast('No data to export','error');return;}
-  const keys = Object.keys(data[0]);
-  const csv = [keys.join(','), ...data.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download = filename; a.click();
-  toast('Exported!');
-}
-function exportEmployeeCSV() { exportCSV(empReportData, 'employees.csv'); }
-function exportAttCSV() { exportCSV(attReportData, 'attendance.csv'); }
+function exportCSV(data,filename){if(!data.length){toast('No data','error');return;}const keys=Object.keys(data[0]);const csv=[keys.join(','),...data.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=filename;a.click();toast('Exported!');}
+function exportEmployeeCSV(){exportCSV(empReportData,'employees.csv');}
+function exportAttCSV(){exportCSV(attReportData,'attendance.csv');}
 
-// ── DEPARTMENTS ──────────────────────────────────
-async function loadDepartments() {
-  const depts = await fetch('/api/departments').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('dept-list').innerHTML = depts.length
-    ? depts.map(d=>`<div class="list-item"><div><div class="list-item-name">${d.dept_name}</div><div class="list-item-sub">${d.location||'No location'}</div></div><button class="btn btn-danger btn-sm" onclick="deleteDept(${d.dept_id})">✕</button></div>`).join('')
-    : '<div class="loading">No departments yet</div>';
-}
-async function addDepartment() {
-  const name = document.getElementById('dept-name').value.trim();
-  const loc = document.getElementById('dept-loc').value.trim();
-  if(!name){toast('Enter name','error');return;}
-  const res = await fetch('/api/departments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_name:name,location:loc})});
-  if(res.ok){document.getElementById('dept-name').value='';document.getElementById('dept-loc').value='';toast('Department added');loadDepartments();}
-  else toast('Error','error');
-}
-async function deleteDept(id) {
-  if(!confirm('Delete department?')) return;
-  const res = await fetch(`/api/departments/${id}`,{method:'DELETE'});
-  if(res.ok){toast('Deleted');loadDepartments();}
-  else toast('Cannot delete — employees assigned','error');
-}
+async function loadDepartments(){const depts=await fetch('/api/departments').then(r=>r.json()).catch(()=>[]);document.getElementById('dept-list').innerHTML=depts.length?depts.map(d=>`<div class="list-item"><div><div class="list-item-name">${d.dept_name}</div><div class="list-item-sub">${d.location||'—'}</div></div><button class="btn btn-danger btn-sm" onclick="deleteDept(${d.dept_id})">✕</button></div>`).join(''):'<div class="loading">None</div>';}
+async function addDepartment(){const n=document.getElementById('dept-name').value.trim();const l=document.getElementById('dept-loc').value.trim();if(!n){toast('Enter name','error');return;}const res=await fetch('/api/departments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_name:n,location:l})});if(res.ok){document.getElementById('dept-name').value='';document.getElementById('dept-loc').value='';toast('Added');loadDepartments();}else toast('Error','error');}
+async function deleteDept(id){if(!confirm('Delete?'))return;const res=await fetch(`/api/departments/${id}`,{method:'DELETE'});if(res.ok){toast('Deleted');loadDepartments();}else toast('Cannot delete — employees assigned','error');}
 
-// ── DESIGNATIONS ─────────────────────────────────
-async function loadDesignations() {
-  const desigs = await fetch('/api/designations').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('desig-list').innerHTML = desigs.length
-    ? desigs.map(d=>`<div class="list-item"><div class="list-item-name">${d.title}</div></div>`).join('')
-    : '<div class="loading">No designations</div>';
-}
-async function addDesignation() {
-  const title = document.getElementById('desig-title').value.trim();
-  if(!title){toast('Enter title','error');return;}
-  const res = await fetch('/api/designations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title})});
-  if(res.ok){document.getElementById('desig-title').value='';toast('Designation added');loadDesignations();}
-  else toast('Error','error');
-}
+async function loadDesignations(){const desigs=await fetch('/api/designations').then(r=>r.json()).catch(()=>[]);document.getElementById('desig-list').innerHTML=desigs.length?desigs.map(d=>`<div class="list-item"><div class="list-item-name">${d.title}</div></div>`).join(''):'<div class="loading">None</div>';}
+async function addDesignation(){const t=document.getElementById('desig-title').value.trim();if(!t){toast('Enter title','error');return;}const res=await fetch('/api/designations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:t})});if(res.ok){document.getElementById('desig-title').value='';toast('Added');loadDesignations();}else toast('Error','error');}
 
-// ── INIT ─────────────────────────────────────────
 initToday();
 loadDashboard();
 </script>
