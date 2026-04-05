@@ -8,7 +8,7 @@
 git init
 git add .
 git commit -m "EMS v2 initial"
-git remote add origin https://github.com/YOURUSERNAME/ems.git
+git remote add origin https://github.com/mujtabaaqeel9-lgtm/ems.git
 git push -u origin main
 ```
 

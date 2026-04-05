@@ -21,7 +21,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .nav-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
 .nav-item.active{background:rgba(255,255,255,0.18);color:#fff;}
 .nav-icon{width:18px;text-align:center;font-size:15px;}
-.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.12);font-size:10px;color:rgba(255,255,255,0.4);}
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.12);}
+.user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;cursor:pointer;}
+.user-name{font-size:12px;font-weight:600;color:#fff;}
+.user-role-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;}
+.logout-btn{width:100%;padding:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:rgba(255,255,255,0.8);font-family:var(--font);font-size:12px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.logout-btn:hover{background:rgba(255,255,255,0.2);color:#fff;}
+.role-chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.chip-admin{background:#fef3c7;color:#d97706;}
+.chip-hr{background:#dbeafe;color:var(--primary);}
+.chip-employee{background:#d1fae5;color:#0d9488;}
 .menu-btn{display:none;position:fixed;top:12px;left:12px;z-index:300;background:var(--primary);border:none;color:#fff;width:38px;height:38px;border-radius:8px;font-size:18px;cursor:pointer;align-items:center;justify-content:center;}
 .main{margin-left:var(--sidebar-w);min-height:100vh;padding:24px;transition:margin 0.3s;}
 .page{display:none;animation:fadeUp 0.3s ease;}
@@ -144,6 +154,16 @@ input:focus,select:focus{border-color:var(--primary);}
 .rs-lab{font-size:10px;color:var(--text-muted);margin-top:2px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 
+/* Employee self-view profile card */
+.profile-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;box-shadow:var(--shadow);max-width:640px;}
+.profile-header{display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;flex-shrink:0;}
+.profile-name{font-family:var(--font-serif);font-size:22px;}
+.profile-role{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.profile-field label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:4px;}
+.profile-field .val{font-size:13px;font-weight:600;color:var(--text);}
+
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(3,1fr);}.report-summary{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);}
@@ -158,6 +178,7 @@ input:focus,select:focus{border-color:var(--primary);}
   .page-header{flex-direction:column;}
   .search-wrap input{width:100%;}
   .att-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+  .profile-grid{grid-template-columns:1fr;}
 }
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr 1fr;}.stat-value{font-size:20px;}.report-summary{grid-template-columns:1fr 1fr;}}
 @media print{.sidebar,.menu-btn,.btn,.filter-bar,.header-actions,.card-header .btn{display:none!important;}.main{margin:0;padding:0;}.payslip{border:none;box-shadow:none;}}
@@ -174,28 +195,25 @@ input:focus,select:focus{border-color:var(--primary);}
     <div class="logo-text">EMS</div>
     <div class="logo-sub">Employee Management</div>
   </div>
-  <nav class="nav">
-    <div class="nav-section">Main</div>
-    <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
-    <div class="nav-item" onclick="showPage('employees')"><span class="nav-icon">👥</span>Employees</div>
-    <div class="nav-section">Operations</div>
-    <div class="nav-item" onclick="showPage('attendance')"><span class="nav-icon">📅</span>Attendance</div>
-    <div class="nav-item" onclick="showPage('payroll')"><span class="nav-icon">💰</span>Payroll</div>
-    <div class="nav-item" onclick="showPage('reports')"><span class="nav-icon">📄</span>Reports</div>
-    <div class="nav-section">Settings</div>
-    <div class="nav-item" onclick="showPage('departments')"><span class="nav-icon">🏬</span>Departments</div>
-    <div class="nav-item" onclick="showPage('designations')"><span class="nav-icon">🏷️</span>Designations</div>
+  <nav class="nav" id="main-nav">
+    <!-- Populated dynamically based on role -->
   </nav>
-  <div class="sidebar-footer">v2.1 · Flask + MySQL</div>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar" id="user-avatar" title="Change Password">?</div>
+      <div><div class="user-name" id="user-name">Loading...</div><div class="user-role-label" id="user-role"></div></div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">🚪 Sign Out</button>
+  </div>
 </aside>
 
 <main class="main">
 
-<!-- DASHBOARD -->
-<div class="page active" id="page-dashboard">
+<!-- ══ DASHBOARD (admin + hr) ══ -->
+<div class="page" id="page-dashboard">
   <div class="page-header">
     <div><div class="page-title">Dashboard</div><div class="page-sub" id="today-date"></div></div>
-    <button class="btn btn-primary" onclick="showPage('employees')">+ Add Employee</button>
+    <button class="btn btn-primary" id="dash-add-btn" onclick="showPage('employees')">+ Add Employee</button>
   </div>
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap blue">👥</div><div class="stat-label">Total</div></div><div class="stat-value" id="stat-total">—</div><div class="stat-trend">Employees</div></div>
@@ -210,11 +228,19 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
-<!-- EMPLOYEES -->
+<!-- ══ MY PROFILE (employee only) ══ -->
+<div class="page" id="page-profile">
+  <div class="page-header">
+    <div><div class="page-title">My Profile</div><div class="page-sub">Your personal information</div></div>
+  </div>
+  <div class="profile-card" id="profile-content"><div class="loading">Loading...</div></div>
+</div>
+
+<!-- ══ EMPLOYEES ══ -->
 <div class="page" id="page-employees">
   <div class="page-header">
     <div><div class="page-title">Employees</div><div class="page-sub">Manage workforce</div></div>
-    <button class="btn btn-primary" onclick="openEmpModal()">+ Add Employee</button>
+    <button class="btn btn-primary" id="add-emp-btn" onclick="openEmpModal()">+ Add Employee</button>
   </div>
   <div class="card">
     <div class="card-header">
@@ -225,23 +251,27 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
-<!-- ATTENDANCE -->
+<!-- ══ ATTENDANCE ══ -->
 <div class="page" id="page-attendance">
-  <div class="page-header"><div><div class="page-title">Attendance</div><div class="page-sub">Daily tracking & percentage</div></div></div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">Mark Attendance</div>
-      <div class="filter-bar">
-        <input type="date" id="att-date"/>
-        <button class="btn btn-primary btn-sm" onclick="loadAttendance()">Load</button>
-        <button class="btn btn-success btn-sm" onclick="saveAllAttendance()">💾 Save All</button>
+  <div class="page-header"><div><div class="page-title">Attendance</div><div class="page-sub" id="att-page-sub">Daily tracking</div></div></div>
+  <!-- HR/Admin: mark attendance -->
+  <div id="att-mark-section">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Mark Attendance</div>
+        <div class="filter-bar">
+          <input type="date" id="att-date"/>
+          <button class="btn btn-primary btn-sm" onclick="loadAttendance()">Load</button>
+          <button class="btn btn-success btn-sm" onclick="saveAllAttendance()">💾 Save All</button>
+        </div>
       </div>
+      <div class="card-body"><div class="att-grid" id="att-grid"><div class="loading">Select date → Load</div></div></div>
     </div>
-    <div class="card-body"><div class="att-grid" id="att-grid"><div class="loading">Select date → Load</div></div></div>
   </div>
+  <!-- All: monthly log -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">Monthly Attendance % Report</div>
+      <div class="card-title">Monthly Attendance Report</div>
       <div class="filter-bar">
         <select id="att-log-month"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
         <select id="att-log-year"><option value="2025">2025</option><option value="2026" selected>2026</option></select>
@@ -252,18 +282,24 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
-<!-- PAYROLL -->
+<!-- ══ PAYROLL ══ -->
 <div class="page" id="page-payroll">
   <div class="page-header">
-    <div><div class="page-title">Payroll</div><div class="page-sub">Auto attendance-based deduction</div></div>
-    <div class="header-actions">
+    <div><div class="page-title">Payroll</div><div class="page-sub" id="pay-page-sub">Salary records</div></div>
+    <div class="header-actions" id="pay-admin-actions">
       <select id="pay-month"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
       <select id="pay-year"><option value="2025">2025</option><option value="2026" selected>2026</option></select>
       <button class="btn btn-primary" onclick="generatePayroll()">⚡ Generate</button>
       <button class="btn btn-outline" onclick="loadPayroll()">🔄 Refresh</button>
     </div>
+    <!-- employee payroll filter (month/year only, no generate) -->
+    <div class="header-actions" id="pay-emp-actions" style="display:none">
+      <select id="pay-month-emp"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
+      <select id="pay-year-emp"><option value="2025">2025</option><option value="2026" selected>2026</option></select>
+      <button class="btn btn-outline" onclick="loadPayroll()">View My Payslip</button>
+    </div>
   </div>
-  <div class="rule-info">⚠️ <strong>Rule:</strong> Attendance &lt; 75% → 40% salary deduction applied automatically on Generate.</div>
+  <div class="rule-info" id="pay-rule-info">⚠️ <strong>Rule:</strong> Attendance &lt; 75% → 40% salary deduction applied automatically on Generate.</div>
   <div class="card">
     <div class="card-header"><div class="card-title">Payroll Records</div></div>
     <div class="table-wrap" id="pay-table"><div class="loading">Select month → Generate</div></div>
@@ -282,7 +318,7 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
-<!-- REPORTS -->
+<!-- ══ REPORTS (admin + hr) ══ -->
 <div class="page" id="page-reports">
   <div class="page-header"><div><div class="page-title">Reports</div><div class="page-sub">Export & analyze</div></div></div>
   <div class="two-col">
@@ -313,7 +349,7 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
-<!-- DEPARTMENTS -->
+<!-- ══ DEPARTMENTS (admin only) ══ -->
 <div class="page" id="page-departments">
   <div class="page-header"><div><div class="page-title">Departments</div></div></div>
   <div class="card"><div class="card-header"><div class="card-title">Add Department</div></div>
@@ -324,7 +360,7 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
-<!-- DESIGNATIONS -->
+<!-- ══ DESIGNATIONS (admin + hr) ══ -->
 <div class="page" id="page-designations">
   <div class="page-header"><div><div class="page-title">Designations</div></div></div>
   <div class="card"><div class="card-header"><div class="card-title">Add Designation</div></div>
@@ -332,6 +368,18 @@ input:focus,select:focus{border-color:var(--primary);}
       <div class="add-inline"><input type="text" id="desig-title" placeholder="Title..."/><button class="btn btn-primary" onclick="addDesignation()">+ Add</button></div>
       <div class="list-grid" id="desig-list"><div class="loading">Loading...</div></div>
     </div>
+  </div>
+</div>
+
+<!-- ══ USERS (admin only) ══ -->
+<div class="page" id="page-users">
+  <div class="page-header">
+    <div><div class="page-title">Users</div><div class="page-sub">Role-based access control</div></div>
+    <button class="btn btn-primary" onclick="openUserModal()">+ Add User</button>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">All Users</div></div>
+    <div class="table-wrap" id="users-table"><div class="loading">Loading...</div></div>
   </div>
 </div>
 
@@ -359,67 +407,269 @@ input:focus,select:focus{border-color:var(--primary);}
   </div>
 </div>
 
+<!-- USER MODAL -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="user-modal-title">Add User</h3><button class="modal-close" onclick="closeUserModal()">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="u-id"/>
+      <div class="form-grid">
+        <div class="form-group"><label>Username *</label><input type="text" id="u-username" placeholder="john_doe"/></div>
+        <div class="form-group"><label>Password *</label><input type="password" id="u-password" placeholder="Leave blank to keep"/></div>
+        <div class="form-group"><label>Role</label><select id="u-role"><option value="employee">Employee</option><option value="hr">HR</option><option value="admin">Admin</option></select></div>
+        <div class="form-group"><label>Link to Employee</label><select id="u-emp"><option value="">None</option></select></div>
+        <div class="form-group full"><label>Status</label><select id="u-active"><option value="1">Active</option><option value="0">Inactive</option></select></div>
+      </div>
+      <div class="form-actions"><button class="btn btn-danger" onclick="closeUserModal()">Cancel</button><button class="btn btn-primary" onclick="saveUser()">Save User</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-overlay" id="pw-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-head"><h3>Change Password</h3><button class="modal-close" onclick="document.getElementById('pw-modal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:14px"><label>Old Password</label><input type="password" id="pw-old"/></div>
+      <div class="form-group" style="margin-bottom:14px"><label>New Password</label><input type="password" id="pw-new"/></div>
+      <div class="form-group" style="margin-bottom:14px"><label>Confirm New Password</label><input type="password" id="pw-confirm"/></div>
+      <div class="form-actions"><button class="btn btn-danger" onclick="document.getElementById('pw-modal').classList.remove('open')">Cancel</button><button class="btn btn-primary" onclick="changePassword()">Update Password</button></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg"></span></div>
 
 <script>
-let allEmployees=[],departments=[],designations=[],empReportData=[],attReportData=[];
+// ── STATE ─────────────────────────────────────────────
+let allEmployees=[], departments=[], designations=[], empReportData=[], attReportData=[];
+let currentUser = null;
 
+// ── ROLE DEFINITIONS ──────────────────────────────────
+const NAV_CONFIG = {
+  admin: [
+    { section: 'Main' },
+    { page: 'dashboard', icon: '📊', label: 'Dashboard' },
+    { page: 'employees', icon: '👥', label: 'Employees' },
+    { section: 'Operations' },
+    { page: 'attendance', icon: '📅', label: 'Attendance' },
+    { page: 'payroll',    icon: '💰', label: 'Payroll' },
+    { page: 'reports',    icon: '📄', label: 'Reports' },
+    { section: 'Settings' },
+    { page: 'departments',  icon: '🏬', label: 'Departments' },
+    { page: 'designations', icon: '🏷️', label: 'Designations' },
+    { page: 'users',        icon: '🔐', label: 'Users' },
+  ],
+  hr: [
+    { section: 'Main' },
+    { page: 'dashboard', icon: '📊', label: 'Dashboard' },
+    { page: 'employees', icon: '👥', label: 'Employees' },
+    { section: 'Operations' },
+    { page: 'attendance', icon: '📅', label: 'Attendance' },
+    { page: 'payroll',    icon: '💰', label: 'Payroll' },
+    { page: 'reports',    icon: '📄', label: 'Reports' },
+    { section: 'Settings' },
+    { page: 'designations', icon: '🏷️', label: 'Designations' },
+  ],
+  employee: [
+    { section: 'My Account' },
+    { page: 'profile',    icon: '👤', label: 'My Profile' },
+    { page: 'attendance', icon: '📅', label: 'My Attendance' },
+    { page: 'payroll',    icon: '💰', label: 'My Payslip' },
+  ],
+};
+
+// Pages each role can access
+const ROLE_PAGES = {
+  admin:    ['dashboard','employees','attendance','payroll','reports','departments','designations','users'],
+  hr:       ['dashboard','employees','attendance','payroll','reports','designations'],
+  employee: ['profile','attendance','payroll'],
+};
+
+// ── SIDEBAR ───────────────────────────────────────────
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
 
-function toast(msg,type='success'){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.className='toast show'+(type==='error'?' error':'');setTimeout(()=>t.classList.remove('show'),3000);}
-
-function initToday(){const d=new Date();document.getElementById('today-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});document.getElementById('att-date').value=d.toISOString().split('T')[0];document.getElementById('att-log-month').value=d.getMonth()+1;document.getElementById('pay-month').value=d.getMonth()+1;document.getElementById('rp-month').value=d.getMonth()+1;}
-
-function av(fn,ln){return `<div class="avatar">${(fn[0]||'')+(ln[0]||'')}</div>`;}
-function bs(s){const m={Active:'active',Inactive:'inactive','On Leave':'leave',Present:'present',Absent:'absent',Late:'late','Half Day':'halfday',Paid:'paid',Pending:'pending'};return `<span class="badge badge-${m[s]||'active'}">${s}</span>`;}
-
-function pctBar(pct){
-  const cls=pct>=75?'good':pct>=50?'warn':'bad';
-  return `<div class="att-pct-wrap"><div class="att-bar"><div class="att-fill ${cls}" style="width:${Math.min(pct,100)}%"></div></div><span class="att-pct-num ${cls}">${pct.toFixed(0)}%</span>${pct<75?'<span class="deduct-badge">⚠️-40%</span>':''}</div>`;
+function buildNav(role) {
+  const nav = document.getElementById('main-nav');
+  const items = NAV_CONFIG[role] || [];
+  nav.innerHTML = items.map(item => {
+    if (item.section) return `<div class="nav-section">${item.section}</div>`;
+    return `<div class="nav-item" id="nav-${item.page}" onclick="showPage('${item.page}')"><span class="nav-icon">${item.icon}</span>${item.label}</div>`;
+  }).join('');
 }
 
-function showPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  const pages=['dashboard','employees','attendance','payroll','reports','departments','designations'];
-  const idx=pages.indexOf(name);if(idx>=0)document.querySelectorAll('.nav-item')[idx].classList.add('active');
-  const loaders={dashboard:loadDashboard,employees:loadEmployees,attendance:()=>{},payroll:loadPayroll,reports:()=>{loadEmpReport();loadAttReport();},departments:loadDepartments,designations:loadDesignations};
-  if(loaders[name])loaders[name]();
+// ── PAGE ROUTING ──────────────────────────────────────
+function showPage(name) {
+  if (!currentUser) return;
+  const allowed = ROLE_PAGES[currentUser.role] || [];
+  if (!allowed.includes(name)) { toast('Access denied', 'error'); return; }
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+  const navItem = document.getElementById('nav-' + name);
+  if (navItem) navItem.classList.add('active');
+
+  const loaders = {
+    dashboard:    loadDashboard,
+    profile:      loadProfile,
+    employees:    loadEmployees,
+    attendance:   () => {},
+    payroll:      loadPayroll,
+    reports:      () => { loadEmpReport(); loadAttReport(); },
+    departments:  loadDepartments,
+    designations: loadDesignations,
+    users:        loadUsers,
+  };
+  if (loaders[name]) loaders[name]();
   closeSidebar();
 }
 
-async function loadDashboard(){
-  const stats=await fetch('/api/stats').then(r=>r.json()).catch(()=>({}));
-  document.getElementById('stat-total').textContent=stats.total_employees||'0';
-  document.getElementById('stat-active').textContent=stats.active_employees||'0';
-  document.getElementById('stat-present').textContent=stats.present_today||'0';
-  document.getElementById('stat-depts').textContent=stats.total_departments||'0';
-  document.getElementById('stat-salary').textContent=stats.avg_salary?'₨'+Math.round(stats.avg_salary/1000)+'K':'—';
-  const emps=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('recent-table').innerHTML=buildEmpTable(emps.slice(0,5));
+// ── TOAST ─────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'toast show' + (type === 'error' ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-async function loadEmployees(){
+// ── DATE INIT ─────────────────────────────────────────
+function initToday() {
+  const d = new Date();
+  const el = document.getElementById('today-date');
+  if (el) el.textContent = d.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const attDate = document.getElementById('att-date');
+  if (attDate) attDate.value = d.toISOString().split('T')[0];
+  document.getElementById('att-log-month').value = d.getMonth()+1;
+  document.getElementById('pay-month').value = d.getMonth()+1;
+  document.getElementById('pay-month-emp').value = d.getMonth()+1;
+  document.getElementById('rp-month').value = d.getMonth()+1;
+}
+
+function av(fn,ln){return `<div class="avatar">${(fn[0]||'')+(ln[0]||'')}</div>`;}
+function bs(s){const m={Active:'active',Inactive:'inactive','On Leave':'leave',Present:'present',Absent:'absent',Late:'late','Half Day':'halfday',Paid:'paid',Pending:'pending'};return `<span class="badge badge-${m[s]||'active'}">${s}</span>`;}
+function pctBar(pct){const cls=pct>=75?'good':pct>=50?'warn':'bad';return `<div class="att-pct-wrap"><div class="att-bar"><div class="att-fill ${cls}" style="width:${Math.min(pct,100)}%"></div></div><span class="att-pct-num ${cls}">${pct.toFixed(0)}%</span>${pct<75?'<span class="deduct-badge">⚠️-40%</span>':''}</div>`;}
+
+// ── AUTH ──────────────────────────────────────────────
+async function loadCurrentUser() {
+  const res = await fetch('/api/auth/me').catch(() => null);
+  if (!res || res.status === 401) { window.location.href = '/login'; return; }
+  currentUser = await res.json();
+
+  // Avatar & name
+  document.getElementById('user-avatar').textContent = currentUser.username.substring(0,2).toUpperCase();
+  document.getElementById('user-name').textContent = currentUser.username;
+  document.getElementById('user-role').textContent = currentUser.role.toUpperCase();
+
+  // Build nav for role
+  buildNav(currentUser.role);
+  initToday();
+  applyRoleUI();
+
+  // Land on appropriate default page
+  const defaults = { admin: 'dashboard', hr: 'dashboard', employee: 'profile' };
+  showPage(defaults[currentUser.role] || 'profile');
+}
+
+function applyRoleUI() {
+  const role = currentUser.role;
+
+  // Dashboard add-employee button (HR can add, employee cannot see dashboard)
+  const dashBtn = document.getElementById('dash-add-btn');
+  if (dashBtn) dashBtn.style.display = (role === 'employee') ? 'none' : '';
+
+  // Employees: hide edit/delete for HR? HR CAN manage employees per original app.
+  // "Add Employee" button visible to admin+hr only, hidden for employee
+  const addEmpBtn = document.getElementById('add-emp-btn');
+  if (addEmpBtn) addEmpBtn.style.display = (role === 'employee') ? 'none' : '';
+
+  // Attendance mark section: employees only see the log, not the mark section
+  const attMarkSection = document.getElementById('att-mark-section');
+  if (attMarkSection) attMarkSection.style.display = (role === 'employee') ? 'none' : '';
+
+  // Payroll actions
+  document.getElementById('pay-admin-actions').style.display = (role === 'employee') ? 'none' : '';
+  document.getElementById('pay-emp-actions').style.display = (role === 'employee') ? '' : 'none';
+  document.getElementById('pay-rule-info').style.display = (role === 'employee') ? 'none' : '';
+}
+
+async function doLogout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  window.location.href = '/login';
+}
+
+document.getElementById('user-avatar').onclick = () => document.getElementById('pw-modal').classList.add('open');
+
+// ── MY PROFILE (employee self-view) ───────────────────
+async function loadProfile() {
+  const card = document.getElementById('profile-content');
+  if (!currentUser.emp_id) {
+    card.innerHTML = '<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">Your account is not linked to an employee record.<br>Please ask your admin to link your account.</div></div>';
+    return;
+  }
+  const emp = await fetch(`/api/employees/${currentUser.emp_id}`).then(r => r.json()).catch(() => null);
+  if (!emp) { card.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load profile.</div></div>'; return; }
+  card.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-avatar">${(emp.first_name[0]||'')+(emp.last_name[0]||'')}</div>
+      <div>
+        <div class="profile-name">${emp.first_name} ${emp.last_name}</div>
+        <div class="profile-role">${emp.designation_title||'Employee'} · ${emp.dept_name||'—'}</div>
+        <div style="margin-top:6px">${bs(emp.status)}</div>
+      </div>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-field"><label>Email</label><div class="val">${emp.email}</div></div>
+      <div class="profile-field"><label>Phone</label><div class="val">${emp.phone||'—'}</div></div>
+      <div class="profile-field"><label>Department</label><div class="val">${emp.dept_name||'—'}</div></div>
+      <div class="profile-field"><label>Designation</label><div class="val">${emp.designation_title||'—'}</div></div>
+      <div class="profile-field"><label>Hire Date</label><div class="val">${emp.hire_date?emp.hire_date.split('T')[0]:'—'}</div></div>
+      <div class="profile-field"><label>Employee ID</label><div class="val">#${String(emp.emp_id).padStart(3,'0')}</div></div>
+    </div>`;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+async function loadDashboard() {
+  const stats = await fetch('/api/stats').then(r=>r.json()).catch(()=>({}));
+  document.getElementById('stat-total').textContent = stats.total_employees||'0';
+  document.getElementById('stat-active').textContent = stats.active_employees||'0';
+  document.getElementById('stat-present').textContent = stats.present_today||'0';
+  document.getElementById('stat-depts').textContent = stats.total_departments||'0';
+  document.getElementById('stat-salary').textContent = stats.avg_salary?'₨'+Math.round(stats.avg_salary/1000)+'K':'—';
+  const emps = await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('recent-table').innerHTML = buildEmpTable(emps.slice(0,5), true);
+}
+
+// ── EMPLOYEES ─────────────────────────────────────────
+async function loadEmployees() {
   document.getElementById('emp-table').innerHTML='<div class="loading">Loading...</div>';
-  allEmployees=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
-  document.getElementById('emp-table').innerHTML=buildEmpTable(allEmployees);
+  allEmployees = await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('emp-table').innerHTML = buildEmpTable(allEmployees, false);
 }
 
-function buildEmpTable(emps){
-  if(!emps.length)return '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No employees</div></div>';
-  return `<table><thead><tr><th>ID</th><th>Employee</th><th>Department</th><th>Designation</th><th>Salary</th><th>Status</th><th>Actions</th></tr></thead><tbody>${emps.map(e=>`<tr>
-    <td style="color:var(--text-muted);font-size:11px">#${String(e.emp_id).padStart(3,'0')}</td>
-    <td><div class="emp-cell">${av(e.first_name,e.last_name)}<div><div class="td-name">${e.first_name} ${e.last_name}</div><div style="font-size:10px;color:var(--text-muted)">${e.email}</div></div></div></td>
-    <td>${e.dept_name||'—'}</td><td>${e.designation_title||'—'}</td>
-    <td>₨${Number(e.salary).toLocaleString()}</td>
-    <td>${bs(e.status)}</td>
-    <td><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick="editEmployee(${e.emp_id})">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteEmployee(${e.emp_id})">Del</button></div></td>
-  </tr>`).join('')}</tbody></table>`;
+function buildEmpTable(emps, compact=false) {
+  if (!emps.length) return '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No employees</div></div>';
+  const canEdit = currentUser && ['admin','hr'].includes(currentUser.role);
+  const actionCol = canEdit ? '<th>Actions</th>' : '';
+  const rows = emps.map(e => {
+    const actions = canEdit
+      ? `<td><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick="editEmployee(${e.emp_id})">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteEmployee(${e.emp_id})">Del</button></div></td>`
+      : '';
+    return `<tr>
+      <td style="color:var(--text-muted);font-size:11px">#${String(e.emp_id).padStart(3,'0')}</td>
+      <td><div class="emp-cell">${av(e.first_name,e.last_name)}<div><div class="td-name">${e.first_name} ${e.last_name}</div><div style="font-size:10px;color:var(--text-muted)">${e.email}</div></div></div></td>
+      <td>${e.dept_name||'—'}</td><td>${e.designation_title||'—'}</td>
+      <td>₨${Number(e.salary).toLocaleString()}</td>
+      <td>${bs(e.status)}</td>
+      ${actions}
+    </tr>`;
+  }).join('');
+  return `<table><thead><tr><th>ID</th><th>Employee</th><th>Department</th><th>Designation</th><th>Salary</th><th>Status</th>${actionCol}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-function filterEmployees(){const q=document.getElementById('search-input').value.toLowerCase();document.getElementById('emp-table').innerHTML=buildEmpTable(allEmployees.filter(e=>`${e.first_name} ${e.last_name} ${e.email} ${e.dept_name||''} ${e.designation_title||''}`.toLowerCase().includes(q)));}
+function filterEmployees(){const q=document.getElementById('search-input').value.toLowerCase();document.getElementById('emp-table').innerHTML=buildEmpTable(allEmployees.filter(e=>`${e.first_name} ${e.last_name} ${e.email} ${e.dept_name||''} ${e.designation_title||''}`.toLowerCase().includes(q)),false);}
 
 async function openEmpModal(){await loadDropdowns();document.getElementById('emp-id').value='';document.getElementById('modal-title').textContent='Add Employee';['f-first','f-last','f-email','f-phone','f-salary','f-date'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-dept').value='';document.getElementById('f-desig').value='';document.getElementById('f-status').value='Active';document.getElementById('emp-modal').classList.add('open');}
 function closeModal(){document.getElementById('emp-modal').classList.remove('open');}
@@ -453,20 +703,23 @@ async function saveEmployee(){
 
 async function deleteEmployee(id){if(!confirm('Delete?'))return;const res=await fetch(`/api/employees/${id}`,{method:'DELETE'});if(res.ok){toast('Deleted');loadEmployees();loadDashboard();}else toast('Error','error');}
 
+// ── ATTENDANCE ────────────────────────────────────────
 async function loadAttendance(){
-  const date=document.getElementById('att-date').value;
-  if(!date){toast('Select a date','error');return;}
+  const dateEl=document.getElementById('att-date');
+  if(!dateEl||!dateEl.value){toast('Select a date','error');return;}
+  const date=dateEl.value;
   document.getElementById('att-grid').innerHTML='<div class="loading">Loading...</div>';
   const[emps,attList]=await Promise.all([fetch('/api/employees').then(r=>r.json()).catch(()=>[]),fetch(`/api/attendance?date=${date}`).then(r=>r.json()).catch(()=>[])]);
   const attMap={};attList.forEach(a=>{attMap[a.emp_id]=a;});
   const active=emps.filter(e=>e.status==='Active');
-  if(!active.length){document.getElementById('att-grid').innerHTML='<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No active employees.<br>Run SQL: UPDATE employees SET status="Active";</div></div>';return;}
+  if(!active.length){document.getElementById('att-grid').innerHTML='<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No active employees</div></div>';return;}
   document.getElementById('att-grid').innerHTML=active.map(e=>{const s=attMap[e.emp_id]?attMap[e.emp_id].status:'Present';return `<div class="att-card"><div class="att-emp">${av(e.first_name,e.last_name)}<div><div class="att-name">${e.first_name} ${e.last_name}</div><div class="att-dept">${e.dept_name||'—'}</div></div></div><select id="att-${e.emp_id}" style="font-size:12px;width:100%"><option value="Present" ${s==='Present'?'selected':''}>✅ Present</option><option value="Absent" ${s==='Absent'?'selected':''}>❌ Absent</option><option value="Late" ${s==='Late'?'selected':''}>⏰ Late</option><option value="Half Day" ${s==='Half Day'?'selected':''}>🌓 Half Day</option></select></div>`;}).join('');
 }
 
 async function saveAllAttendance(){
-  const date=document.getElementById('att-date').value;
-  if(!date){toast('Select a date','error');return;}
+  const dateEl=document.getElementById('att-date');
+  if(!dateEl||!dateEl.value){toast('Select a date','error');return;}
+  const date=dateEl.value;
   const emps=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
   const active=emps.filter(e=>e.status==='Active');
   let saved=0;
@@ -475,19 +728,31 @@ async function saveAllAttendance(){
 }
 
 async function loadAttLog(){
-  const month=document.getElementById('att-log-month').value;const year=document.getElementById('att-log-year').value;
+  const month=document.getElementById('att-log-month').value;
+  const year=document.getElementById('att-log-year').value;
   document.getElementById('att-log-table').innerHTML='<div class="loading">Loading...</div>';
   const data=await fetch(`/api/reports/attendance?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
   if(!data.length){document.getElementById('att-log-table').innerHTML='<div class="empty"><div class="empty-icon">📅</div><div class="empty-text">No data for this period</div></div>';return;}
-  document.getElementById('att-log-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Dept</th><th>Present</th><th>Absent</th><th>Late</th><th>Half Day</th><th>Attendance %</th></tr></thead><tbody>${data.map(r=>{const total=(r.present_days||0)+(r.absent_days||0)+(r.late_days||0)+(r.half_days||0);const pct=total>0?((r.present_days||0)+(r.late_days||0))/total*100:0;return `<tr><td class="td-name">${r.first_name} ${r.last_name}</td><td>${r.dept_name||'—'}</td><td style="color:var(--success);font-weight:600">${r.present_days||0}</td><td style="color:var(--danger);font-weight:600">${r.absent_days||0}</td><td style="color:var(--warning);font-weight:600">${r.late_days||0}</td><td style="color:var(--info);font-weight:600">${r.half_days||0}</td><td>${pctBar(pct)}</td></tr>`;}).join('')}</tbody></table>`;
+
+  // Employee: only show their own row
+  const filtered = (currentUser.role==='employee' && currentUser.emp_id)
+    ? data.filter(r => r.emp_id == currentUser.emp_id)
+    : data;
+
+  document.getElementById('att-log-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Dept</th><th>Present</th><th>Absent</th><th>Late</th><th>Half Day</th><th>Attendance %</th></tr></thead><tbody>${filtered.map(r=>{const total=(r.present_days||0)+(r.absent_days||0)+(r.late_days||0)+(r.half_days||0);const pct=total>0?((r.present_days||0)+(r.late_days||0))/total*100:0;return `<tr><td class="td-name">${r.first_name} ${r.last_name}</td><td>${r.dept_name||'—'}</td><td style="color:var(--success);font-weight:600">${r.present_days||0}</td><td style="color:var(--danger);font-weight:600">${r.absent_days||0}</td><td style="color:var(--warning);font-weight:600">${r.late_days||0}</td><td style="color:var(--info);font-weight:600">${r.half_days||0}</td><td>${pctBar(pct)}</td></tr>`;}).join('')}</tbody></table>`;
 }
 
+// ── PAYROLL ───────────────────────────────────────────
 async function loadPayroll(){
-  const month=document.getElementById('pay-month').value;const year=document.getElementById('pay-year').value;
+  const isEmp = currentUser && currentUser.role === 'employee';
+  const month = isEmp ? document.getElementById('pay-month-emp').value : document.getElementById('pay-month').value;
+  const year  = isEmp ? document.getElementById('pay-year-emp').value  : document.getElementById('pay-year').value;
   document.getElementById('pay-table').innerHTML='<div class="loading">Loading...</div>';
   const data=await fetch(`/api/payroll?month=${month}&year=${year}`).then(r=>r.json()).catch(()=>[]);
-  if(!data.length){document.getElementById('pay-table').innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No payroll. Click ⚡ Generate!</div></div>';return;}
-  document.getElementById('pay-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Department</th><th>Basic</th><th>Allowances</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th>Actions</th></tr></thead><tbody>${data.map(p=>{const isD=Number(p.deductions)>Number(p.basic_salary)*0.06;return `<tr><td><div class="emp-cell">${av(p.first_name,p.last_name)}<div class="td-name">${p.first_name} ${p.last_name}</div></div></td><td>${p.dept_name||'—'}</td><td>₨${Number(p.basic_salary).toLocaleString()}</td><td style="color:var(--success)">+₨${Number(p.allowances).toLocaleString()}</td><td style="color:var(--danger)">${isD?'⚠️':''}-₨${Number(p.deductions).toLocaleString()}</td><td style="font-weight:700;color:var(--primary)">₨${Number(p.net_salary).toLocaleString()}</td><td>${bs(p.status)}</td><td><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick='showPayslip(${JSON.stringify(p).replace(/'/g,"&#39;")})'>📄 Slip</button>${p.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="markPaid(${p.pay_id})">✓ Pay</button>`:''}</div></td></tr>`;}).join('')}</tbody></table>`;
+  if(!data.length){document.getElementById('pay-table').innerHTML='<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">No payroll records for this period.</div></div>';return;}
+
+  const canPay = currentUser && ['admin','hr'].includes(currentUser.role);
+  document.getElementById('pay-table').innerHTML=`<table><thead><tr><th>Employee</th><th>Department</th><th>Basic</th><th>Allowances</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th>Actions</th></tr></thead><tbody>${data.map(p=>{const isD=Number(p.deductions)>Number(p.basic_salary)*0.06;return `<tr><td><div class="emp-cell">${av(p.first_name,p.last_name)}<div class="td-name">${p.first_name} ${p.last_name}</div></div></td><td>${p.dept_name||'—'}</td><td>₨${Number(p.basic_salary).toLocaleString()}</td><td style="color:var(--success)">+₨${Number(p.allowances).toLocaleString()}</td><td style="color:var(--danger)">${isD?'⚠️':''}-₨${Number(p.deductions).toLocaleString()}</td><td style="font-weight:700;color:var(--primary)">₨${Number(p.net_salary).toLocaleString()}</td><td>${bs(p.status)}</td><td><div style="display:flex;gap:5px"><button class="btn btn-outline btn-sm" onclick='showPayslip(${JSON.stringify(p).replace(/'/g,"&#39;")})'>📄 Slip</button>${canPay && p.status==='Pending'?`<button class="btn btn-success btn-sm" onclick="markPaid(${p.pay_id})">✓ Pay</button>`:''}</div></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 async function generatePayroll(){const month=document.getElementById('pay-month').value;const year=document.getElementById('pay-year').value;toast('Generating...');const res=await fetch('/api/payroll/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({month,year})});const json=await res.json();toast(json.message||'Done!');loadPayroll();}
@@ -501,6 +766,7 @@ function showPayslip(p){
   document.getElementById('payslip-area').scrollIntoView({behavior:'smooth'});
 }
 
+// ── REPORTS ───────────────────────────────────────────
 async function loadEmpReport(){
   empReportData=await fetch('/api/reports/employees').then(r=>r.json()).catch(()=>[]);
   document.getElementById('rp-total').textContent=empReportData.length;
@@ -520,15 +786,69 @@ function exportCSV(data,filename){if(!data.length){toast('No data','error');retu
 function exportEmployeeCSV(){exportCSV(empReportData,'employees.csv');}
 function exportAttCSV(){exportCSV(attReportData,'attendance.csv');}
 
+// ── DEPARTMENTS ───────────────────────────────────────
 async function loadDepartments(){const depts=await fetch('/api/departments').then(r=>r.json()).catch(()=>[]);document.getElementById('dept-list').innerHTML=depts.length?depts.map(d=>`<div class="list-item"><div><div class="list-item-name">${d.dept_name}</div><div class="list-item-sub">${d.location||'—'}</div></div><button class="btn btn-danger btn-sm" onclick="deleteDept(${d.dept_id})">✕</button></div>`).join(''):'<div class="loading">None</div>';}
 async function addDepartment(){const n=document.getElementById('dept-name').value.trim();const l=document.getElementById('dept-loc').value.trim();if(!n){toast('Enter name','error');return;}const res=await fetch('/api/departments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_name:n,location:l})});if(res.ok){document.getElementById('dept-name').value='';document.getElementById('dept-loc').value='';toast('Added');loadDepartments();}else toast('Error','error');}
 async function deleteDept(id){if(!confirm('Delete?'))return;const res=await fetch(`/api/departments/${id}`,{method:'DELETE'});if(res.ok){toast('Deleted');loadDepartments();}else toast('Cannot delete — employees assigned','error');}
 
+// ── DESIGNATIONS ──────────────────────────────────────
 async function loadDesignations(){const desigs=await fetch('/api/designations').then(r=>r.json()).catch(()=>[]);document.getElementById('desig-list').innerHTML=desigs.length?desigs.map(d=>`<div class="list-item"><div class="list-item-name">${d.title}</div></div>`).join(''):'<div class="loading">None</div>';}
 async function addDesignation(){const t=document.getElementById('desig-title').value.trim();if(!t){toast('Enter title','error');return;}const res=await fetch('/api/designations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:t})});if(res.ok){document.getElementById('desig-title').value='';toast('Added');loadDesignations();}else toast('Error','error');}
 
-initToday();
-loadDashboard();
+// ── USERS ─────────────────────────────────────────────
+async function loadUsers(){
+  const tbl=document.getElementById('users-table');
+  if(!tbl)return;
+  tbl.innerHTML='<div class="loading">Loading...</div>';
+  const data=await fetch('/api/users').then(r=>r.json()).catch(()=>[]);
+  if(!data.length){tbl.innerHTML='<div class="empty"><div class="empty-icon">🔐</div><div class="empty-text">No users</div></div>';return;}
+  const chip=r=>{const m={admin:'<span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">ADMIN</span>',hr:'<span style="background:#dbeafe;color:#1a56db;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">HR</span>',employee:'<span style="background:#d1fae5;color:#0d9488;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">EMP</span>'};return m[r]||r;};
+  tbl.innerHTML='<table><thead><tr><th>Username</th><th>Role</th><th>Employee</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+data.map(u=>'<tr><td class="td-name">'+u.username+'</td><td>'+chip(u.role)+'</td><td>'+(u.first_name?u.first_name+' '+u.last_name:'—')+'</td><td>'+(u.is_active?'<span class="badge badge-active">Active</span>':'<span class="badge badge-inactive">Inactive</span>')+'</td><td><div style="display:flex;gap:5px"><button class="btn btn-danger btn-sm" onclick="deleteUser('+u.user_id+')">Del</button></div></td></tr>').join('')+'</tbody></table>';
+}
+
+async function openUserModal(){
+  const emps=await fetch('/api/employees').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('u-emp').innerHTML='<option value="">None</option>'+emps.map(e=>`<option value="${e.emp_id}">${e.first_name} ${e.last_name}</option>`).join('');
+  document.getElementById('u-id').value='';
+  document.getElementById('user-modal-title').textContent='Add User';
+  document.getElementById('u-username').value='';
+  document.getElementById('u-password').value='';
+  document.getElementById('u-role').value='employee';
+  document.getElementById('u-emp').value='';
+  document.getElementById('u-active').value='1';
+  document.getElementById('user-modal').classList.add('open');
+}
+function closeUserModal(){document.getElementById('user-modal').classList.remove('open');}
+
+async function saveUser(){
+  const id=document.getElementById('u-id').value;
+  const data={username:document.getElementById('u-username').value,password:document.getElementById('u-password').value,role:document.getElementById('u-role').value,emp_id:document.getElementById('u-emp').value||null,is_active:parseInt(document.getElementById('u-active').value)};
+  if(!id&&!data.password){toast('Password required','error');return;}
+  const res=await fetch(id?'/api/users/'+id:'/api/users',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const json=await res.json();
+  if(res.ok){toast(id?'Updated!':'User created!');closeUserModal();loadUsers();}else toast(json.error||'Error','error');
+}
+
+async function deleteUser(id){
+  if(!confirm('Delete user?'))return;
+  const res=await fetch('/api/users/'+id,{method:'DELETE'});
+  if(res.ok){toast('Deleted');loadUsers();}else{const j=await res.json();toast(j.error||'Error','error');}
+}
+
+// ── CHANGE PASSWORD ───────────────────────────────────
+async function changePassword(){
+  const op=document.getElementById('pw-old').value;
+  const np=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-confirm').value;
+  if(np!==cf){toast('Passwords do not match','error');return;}
+  const res=await fetch('/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({old_password:op,new_password:np})});
+  const json=await res.json();
+  if(res.ok){toast('Password changed!');document.getElementById('pw-modal').classList.remove('open');}
+  else toast(json.error||'Error','error');
+}
+
+// ── BOOT ──────────────────────────────────────────────
+loadCurrentUser();
 </script>
 </body>
 </html>

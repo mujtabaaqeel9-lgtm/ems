@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EMS — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --primary:#1a56db;--primary-dark:#1343b0;--primary-light:#e8f0fe;
+  --bg:#f0f4ff;--white:#fff;--border:#e2e8f0;
+  --text:#1a202c;--text-mid:#4a5568;--text-muted:#94a3b8;
+  --danger:#e53e3e;--danger-bg:#fff5f5;
+  --success:#0d9488;--success-bg:#f0fdf4;
+  --shadow-lg:0 12px 40px rgba(26,86,219,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:16px;
+}
+body::before{
+  content:'';position:fixed;top:-20%;left:-10%;width:70%;height:80%;
+  background:radial-gradient(ellipse,rgba(26,86,219,0.10) 0%,transparent 65%);
+  pointer-events:none;
+}
+body::after{
+  content:'';position:fixed;bottom:-20%;right:-10%;width:55%;height:70%;
+  background:radial-gradient(ellipse,rgba(13,148,136,0.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+
+/* ── Card ── */
+.card{
+  background:var(--white);border-radius:20px;box-shadow:var(--shadow-lg);
+  width:100%;max-width:440px;overflow:hidden;
+  animation:slideUp 0.4s cubic-bezier(.34,1.26,.64,1);
+  position:relative;z-index:1;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Header ── */
+.card-head{
+  background:linear-gradient(135deg,var(--primary) 0%,#2563eb 100%);
+  padding:28px 32px 24px;position:relative;overflow:hidden;
+}
+.card-head::after{
+  content:'';position:absolute;right:-30px;top:-30px;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,0.06);
+}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.logo-box{
+  width:44px;height:44px;background:rgba(255,255,255,0.18);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:#fff;}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;}
+
+/* ── Tab bar ── */
+.tabs{display:flex;background:rgba(255,255,255,0.12);border-radius:10px;padding:3px;gap:3px;}
+.tab{
+  flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;
+  cursor:pointer;color:rgba(255,255,255,0.6);border-radius:8px;transition:all 0.2s;
+}
+.tab.active{background:rgba(255,255,255,0.22);color:#fff;}
+
+/* ── Body ── */
+.card-body{padding:28px 32px 32px;}
+
+/* ── Panels ── */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ── Step indicator ── */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:22px;}
+.step{
+  display:flex;align-items:center;gap:6px;flex:1;
+}
+.step-dot{
+  width:26px;height:26px;border-radius:50%;border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  color:var(--text-muted);background:#fff;flex-shrink:0;transition:all 0.3s;
+}
+.step.done .step-dot{background:var(--success);border-color:var(--success);color:#fff;}
+.step.active .step-dot{background:var(--primary);border-color:var(--primary);color:#fff;}
+.step-label{font-size:11px;color:var(--text-muted);font-weight:500;}
+.step.active .step-label{color:var(--primary);font-weight:600;}
+.step.done .step-label{color:var(--success);}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 6px;border-radius:2px;transition:background 0.3s;}
+.step-line.done{background:var(--success);}
+
+/* ── Alerts ── */
+.alert{
+  border-radius:10px;padding:10px 14px;font-size:13px;
+  margin-bottom:16px;display:none;align-items:center;gap:8px;
+}
+.alert.show{display:flex;}
+.alert-error{background:var(--danger-bg);border:1px solid #fca5a5;color:var(--danger);}
+.alert-success{background:var(--success-bg);border:1px solid #6ee7b7;color:var(--success);}
+.alert-info{background:var(--primary-light);border:1px solid #93c5fd;color:var(--primary);}
+
+/* ── Form elements ── */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase;}
+.input-wrap{position:relative;}
+.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-muted);pointer-events:none;}
+input,select{
+  width:100%;padding:11px 13px 11px 40px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);
+  outline:none;transition:border-color .2s,box-shadow .2s;background:#fff;
+}
+input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,86,219,0.10);}
+input.otp-input{
+  text-align:center;font-size:22px;font-weight:700;letter-spacing:8px;
+  padding-left:13px;
+}
+.eye-btn{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:2px;
+}
+
+/* ── Buttons ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:13px;border:none;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .2s;margin-top:4px;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 18px rgba(26,86,219,0.30);}
+.btn-primary:disabled{opacity:.65;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-ghost{background:transparent;color:var(--primary);border:1.5px solid var(--border);margin-top:10px;}
+.btn-ghost:hover{background:var(--primary-light);border-color:var(--primary);}
+.btn-link{
+  background:none;border:none;color:var(--primary);font-size:12px;font-weight:600;
+  cursor:pointer;padding:0;width:auto;display:inline;margin-top:0;
+  text-decoration:underline;text-underline-offset:2px;
+}
+
+/* ── Login method toggle ── */
+.method-toggle{
+  display:flex;background:var(--bg);border-radius:9px;padding:3px;gap:3px;margin-bottom:20px;
+}
+.method-btn{
+  flex:1;padding:7px;text-align:center;font-size:12px;font-weight:600;
+  cursor:pointer;color:var(--text-muted);border-radius:7px;border:none;
+  background:none;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.method-btn.active{background:#fff;color:var(--primary);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+
+/* ── OTP timer ── */
+.otp-timer{font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;}
+.otp-timer span{color:var(--danger);font-weight:700;}
+
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--text-muted);font-size:11px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.footer{text-align:center;margin-top:18px;font-size:11px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Header -->
+  <div class="card-head">
+    <div class="logo">
+      <div class="logo-box">🏢</div>
+      <div>
+        <div class="logo-text">EMS</div>
+        <div class="logo-sub">Employee Management</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" id="tab-login"    onclick="switchTab('login')">Sign In</div>
+      <div class="tab"        id="tab-register" onclick="switchTab('register')">Create Account</div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body">
+
+    <!-- ══════════════ LOGIN PANEL ══════════════ -->
+    <div class="panel active" id="panel-login">
+
+      <!-- login-method toggle -->
+      <div class="method-toggle">
+        <button class="method-btn active" id="meth-pw"  onclick="setMethod('password')">🔑 Password</button>
+        <button class="method-btn"        id="meth-otp" onclick="setMethod('otp')">📧 Email OTP</button>
+      </div>
+
+      <!-- alerts -->
+      <div class="alert alert-error"   id="login-err"><span>⚠️</span><span id="login-err-msg"></span></div>
+      <div class="alert alert-success" id="login-ok" ><span>✅</span><span id="login-ok-msg"></span></div>
+
+      <!-- PASSWORD METHOD -->
+      <div id="pw-method">
+        <div class="form-group">
+          <label class="form-label">Username or Email</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="pw-identity" placeholder="Enter username or email" autocomplete="username"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="pw-password" placeholder="Enter password" autocomplete="current-password"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('pw-password',this)">👁️</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doPasswordLogin()" id="pw-btn">Sign In →</button>
+      </div>
+
+      <!-- EMAIL OTP METHOD -->
+      <div id="otp-method" style="display:none">
+        <!-- Step 1: enter email -->
+        <div id="otp-step1">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">📧</span>
+              <input type="email" id="otp-login-email" placeholder="your@email.com"/>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="sendLoginOTP()" id="otp-send-btn">Send OTP →</button>
+        </div>
+        <!-- Step 2: enter OTP -->
+        <div id="otp-step2" style="display:none">
+          <div class="alert alert-info show" style="margin-bottom:14px">
+            <span>📨</span><span id="otp-sent-to-msg">OTP sent to your email</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enter 6-digit OTP</label>
+            <div class="input-wrap">
+              <input type="text" class="otp-input" id="otp-login-code" placeholder="——————" maxlength="6" inputmode="numeric"/>
+            </div>
+          </div>
+          <div class="otp-timer">Expires in <span id="otp-timer-val">10:00</span></div>
+          <button class="btn btn-primary" onclick="verifyLoginOTP()" id="otp-verify-btn" style="margin-top:14px">Verify & Sign In →</button>
+          <button class="btn btn-ghost" onclick="resetOTPStep()">← Try different email</button>
+        </div>
+      </div>
+
+      <div class="footer">EMS v2.1 · Employee Management System</div>
+    </div><!-- /panel-login -->
+
+
+    <!-- ══════════════ REGISTER PANEL ══════════════ -->
+    <div class="panel" id="panel-register">
+
+      <!-- Step indicator -->
+      <div class="steps" id="reg-steps">
+        <div class="step active" id="rs1"><div class="step-dot">1</div><div class="step-label">Email</div></div>
+        <div class="step-line" id="rl1"></div>
+        <div class="step" id="rs2"><div class="step-dot">2</div><div class="step-label">Verify</div></div>
+        <div class="step-line" id="rl2"></div>
+        <div class="step" id="rs3"><div class="step-dot">3</div><div class="step-label">Details</div></div>
+      </div>
+
+      <!-- alerts -->
+      <div class="alert alert-error"   id="reg-err"><span>⚠️</span><span id="reg-err-msg"></span></div>
+      <div class="alert alert-success" id="reg-ok" ><span>✅</span><span id="reg-ok-msg"></span></div>
+
+      <!-- STEP 1: email -->
+      <div id="reg-s1">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">📧</span>
+            <input type="email" id="reg-email" placeholder="your@email.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Type</label>
+          <div class="input-wrap">
+            <span class="input-icon">🏷️</span>
+            <select id="reg-role" style="padding-left:40px">
+              <option value="employee">Employee</option>
+              <option value="hr">HR Manager</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="sendRegisterOTP()" id="reg-send-btn">Send Verification OTP →</button>
+      </div>
+
+      <!-- STEP 2: verify OTP -->
+      <div id="reg-s2" style="display:none">
+        <div class="alert alert-info show" style="margin-bottom:14px">
+          <span>📨</span><span id="reg-sent-to-msg">OTP sent</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Enter 6-digit OTP</label>
+          <div class="input-wrap">
+            <input type="text" class="otp-input" id="reg-otp" placeholder="——————" maxlength="6" inputmode="numeric"/>
+          </div>
+        </div>
+        <div class="otp-timer" id="reg-timer-wrap">Expires in <span id="reg-timer-val">10:00</span></div>
+        <button class="btn btn-primary" onclick="verifyRegisterOTP()" id="reg-verify-btn" style="margin-top:14px">Verify Email →</button>
+        <button class="btn btn-ghost" onclick="resetRegStep(1)">← Back</button>
+      </div>
+
+      <!-- STEP 3: account details -->
+      <div id="reg-s3" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="reg-username" placeholder="min. 3 characters"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-password" placeholder="min. 6 characters"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('reg-password',this)">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-confirm" placeholder="Repeat password"/>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="createAccount()" id="reg-create-btn">Create Account →</button>
+        <button class="btn btn-ghost"   onclick="resetRegStep(2)">← Back</button>
+      </div>
+
+      <div class="footer">Admin accounts are created by existing admins only.</div>
+    </div><!-- /panel-register -->
+
+  </div><!-- /card-body -->
+</div><!-- /card -->
+
+<script>
+// ─── STATE ────────────────────────────────────────────────────
+let loginMethod  = 'password';
+let loginEmail   = '';
+let regEmail     = '';
+let regRole      = 'employee';
+let regOtpVerified = false;
+let otpTimerInterval = null;
+
+// ─── TAB ──────────────────────────────────────────────────────
+function switchTab(tab) {
+  ['login','register'].forEach(t => {
+    document.getElementById('tab-'   + t).classList.toggle('active', t === tab);
+    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+  });
+  clearAlerts();
+}
+
+// ─── ALERTS ───────────────────────────────────────────────────
+function showAlert(id, msgId, msg) {
+  clearAlerts();
+  document.getElementById(msgId).textContent = msg;
+  document.getElementById(id).classList.add('show');
+}
+function clearAlerts() {
+  document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
+}
+
+// ─── EYE TOGGLE ───────────────────────────────────────────────
+function toggleEye(id, btn) {
+  const i = document.getElementById(id);
+  i.type = i.type === 'password' ? 'text' : 'password';
+  btn.textContent = i.type === 'password' ? '👁️' : '🙈';
+}
+
+// ─── LOGIN METHOD SWITCH ──────────────────────────────────────
+function setMethod(m) {
+  loginMethod = m;
+  document.getElementById('meth-pw' ).classList.toggle('active', m === 'password');
+  document.getElementById('meth-otp').classList.toggle('active', m === 'otp');
+  document.getElementById('pw-method' ).style.display = m === 'password' ? '' : 'none';
+  document.getElementById('otp-method').style.display = m === 'otp'      ? '' : 'none';
+  clearAlerts();
+}
+
+// ─── OTP TIMER ────────────────────────────────────────────────
+function startTimer(displayId, minutes=10, onExpire=null) {
+  clearInterval(otpTimerInterval);
+  let secs = minutes * 60;
+  const el = document.getElementById(displayId);
+  otpTimerInterval = setInterval(() => {
+    if (secs <= 0) {
+      clearInterval(otpTimerInterval);
+      if (el) el.textContent = 'Expired';
+      if (onExpire) onExpire();
+      return;
+    }
+    secs--;
+    const m = String(Math.floor(secs/60)).padStart(2,'0');
+    const s = String(secs % 60).padStart(2,'0');
+    if (el) el.textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+// ─── KEYBOARD ENTER ──────────────────────────────────────────
+document.addEventListener('keypress', e => {
+  if (e.key !== 'Enter') return;
+  const loginActive = document.getElementById('panel-login').classList.contains('active');
+  if (loginActive) {
+    if (loginMethod === 'password') doPasswordLogin();
+    else {
+      const s2 = document.getElementById('otp-step2');
+      if (s2.style.display !== 'none') verifyLoginOTP();
+      else sendLoginOTP();
+    }
+  } else {
+    const s1v = document.getElementById('reg-s1').style.display;
+    const s2v = document.getElementById('reg-s2').style.display;
+    const s3v = document.getElementById('reg-s3').style.display;
+    if (s1v !== 'none') sendRegisterOTP();
+    else if (s2v !== 'none') verifyRegisterOTP();
+    else createAccount();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// LOGIN — PASSWORD
+// ═══════════════════════════════════════════════════════════════
+async function doPasswordLogin() {
+  const identity = document.getElementById('pw-identity').value.trim();
+  const password = document.getElementById('pw-password').value;
+  if (!identity || !password) { showAlert('login-err','login-err-msg','Please fill in all fields'); return; }
+  const btn = document.getElementById('pw-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const res  = await fetch('/api/auth/login', post({username: identity, password}));
+    const json = await res.json();
+    if (res.ok) {
+      showAlert('login-ok','login-ok-msg','Signed in! Redirecting…');
+      btn.textContent = '✓ Success!';
+      setTimeout(() => window.location.href = '/', 600);
+    } else {
+      showAlert('login-err','login-err-msg', json.error || 'Login failed');
+      btn.disabled = false; btn.textContent = 'Sign In →';
+    }
+  } catch { showAlert('login-err','login-err-msg','Server error'); btn.disabled=false; btn.textContent='Sign In →'; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LOGIN — OTP
+// ═══════════════════════════════════════════════════════════════
+async function sendLoginOTP() {
+  const email = document.getElementById('otp-login-email').value.trim().toLowerCase();
+  if (!email || !email.includes('@')) { showAlert('login-err','login-err-msg','Enter a valid email'); return; }
+  loginEmail = email;
+  const btn  = document.getElementById('otp-send-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  clearAlerts();
+  try {
+    const res  = await fetch('/api/auth/otp/send-login', post({email}));
+    const json = await res.json();
+    if (res.ok) {
+      document.getElementById('otp-step1').style.display = 'none';
+      document.getElementById('otp-step2').style.display = '';
+      document.getElementById('otp-sent-to-msg').textContent = `OTP sent to ${email}`;
+      startTimer('otp-timer-val', 10);
+    } else {
+      showAlert('login-err','login-err-msg', json.error || 'Failed to send OTP');
+    }
+  } catch { showAlert('login-err','login-err-msg','Server error'); }
+  btn.disabled = false; btn.textContent = 'Send OTP →';
+}
+
+async function verifyLoginOTP() {
+  const otp = document.getElementById('otp-login-code').value.trim();
+  if (otp.length !== 6) { showAlert('login-err','login-err-msg','Enter the 6-digit OTP'); return; }
+  const btn = document.getElementById('otp-verify-btn');
+  btn.disabled = true; btn.textContent = 'Verifying…';
+  clearAlerts();
+  try {
+    const res  = await fetch('/api/auth/otp/verify-login', post({email: loginEmail, otp}));
+    const json = await res.json();
+    if (res.ok) {
+      clearInterval(otpTimerInterval);
+      showAlert('login-ok','login-ok-msg','Verified! Redirecting…');
+      btn.textContent = '✓ Success!';
+      setTimeout(() => window.location.href = '/', 600);
+    } else {
+      showAlert('login-err','login-err-msg', json.error || 'Invalid OTP');
+      btn.disabled = false; btn.textContent = 'Verify & Sign In →';
+    }
+  } catch { showAlert('login-err','login-err-msg','Server error'); btn.disabled=false; btn.textContent='Verify & Sign In →'; }
+}
+
+function resetOTPStep() {
+  clearInterval(otpTimerInterval);
+  document.getElementById('otp-step1').style.display = '';
+  document.getElementById('otp-step2').style.display = 'none';
+  document.getElementById('otp-login-code').value = '';
+  clearAlerts();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REGISTER — 3 steps
+// ═══════════════════════════════════════════════════════════════
+function setRegStep(step) {
+  [1,2,3].forEach(n => {
+    document.getElementById(`reg-s${n}`).style.display = (n === step) ? '' : 'none';
+    const rs = document.getElementById(`rs${n}`);
+    rs.classList.toggle('done',   n < step);
+    rs.classList.toggle('active', n === step);
+    if (n < 3) document.getElementById(`rl${n}`).classList.toggle('done', n < step);
+  });
+  clearAlerts();
+}
+
+async function sendRegisterOTP() {
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  regRole     = document.getElementById('reg-role').value;
+  if (!email || !email.includes('@')) { showAlert('reg-err','reg-err-msg','Enter a valid email'); return; }
+  regEmail = email;
+  const btn = document.getElementById('reg-send-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  clearAlerts();
+  try {
+    const res  = await fetch('/api/auth/otp/send-register', post({email}));
+    const json = await res.json();
+    if (res.ok) {
+      setRegStep(2);
+      document.getElementById('reg-sent-to-msg').textContent = `OTP sent to ${email}`;
+      startTimer('reg-timer-val', 10);
+    } else {
+      showAlert('reg-err','reg-err-msg', json.error || 'Failed to send OTP');
+    }
+  } catch { showAlert('reg-err','reg-err-msg','Server error'); }
+  btn.disabled = false; btn.textContent = 'Send Verification OTP →';
+}
+
+async function verifyRegisterOTP() {
+  const otp = document.getElementById('reg-otp').value.trim();
+  if (otp.length !== 6) { showAlert('reg-err','reg-err-msg','Enter the 6-digit OTP'); return; }
+  const btn = document.getElementById('reg-verify-btn');
+  btn.disabled = true; btn.textContent = 'Verifying…';
+  clearAlerts();
+  // We just move to step 3 — actual OTP is verified with account creation in step 3
+  // (We store otp in memory and send it with the final request)
+  regOtpVerified = otp;
+  clearInterval(otpTimerInterval);
+  setRegStep(3);
+  btn.disabled = false; btn.textContent = 'Verify Email →';
+}
+
+async function createAccount() {
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm  = document.getElementById('reg-confirm').value;
+  if (!username || username.length < 3) { showAlert('reg-err','reg-err-msg','Username must be ≥ 3 characters'); return; }
+  if (!password || password.length < 6) { showAlert('reg-err','reg-err-msg','Password must be ≥ 6 characters'); return; }
+  if (password !== confirm) { showAlert('reg-err','reg-err-msg','Passwords do not match'); return; }
+  const btn = document.getElementById('reg-create-btn');
+  btn.disabled = true; btn.textContent = 'Creating…';
+  clearAlerts();
+  try {
+    const res  = await fetch('/api/auth/otp/verify-register', post({
+      email: regEmail, otp: regOtpVerified, username, password, role: regRole
+    }));
+    const json = await res.json();
+    if (res.ok) {
+      showAlert('reg-ok','reg-ok-msg', json.message || 'Account created!');
+      btn.textContent = '✓ Done!';
+      setTimeout(() => { switchTab('login'); resetRegStep(1); }, 2000);
+    } else {
+      showAlert('reg-err','reg-err-msg', json.error || 'Registration failed');
+      btn.disabled = false; btn.textContent = 'Create Account →';
+    }
+  } catch { showAlert('reg-err','reg-err-msg','Server error'); btn.disabled=false; btn.textContent='Create Account →'; }
+}
+
+function resetRegStep(goTo) {
+  if (goTo === 1) {
+    clearInterval(otpTimerInterval);
+    regOtpVerified = false;
+    document.getElementById('reg-otp').value = '';
+  }
+  if (goTo === 2) {
+    document.getElementById('reg-s3').style.display = 'none';
+    setRegStep(2);
+    // Restart timer
+    startTimer('reg-timer-val', 10);
+  } else {
+    setRegStep(goTo);
+  }
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────
+function post(body) {
+  return { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
+}
+</script>
+</body>
+</html>
